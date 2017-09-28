@@ -11,7 +11,6 @@ var app = playground({
 
     width : 800,
     height: 800,
-    //smoothing: false,
 
     create: function(){
         this.fantom = {
@@ -84,7 +83,7 @@ var app = playground({
 
             case 'space':
                 this.fantom.xs = 0;
-                this.fantom.ys = 2;
+                this.fantom.ys = 0;
                 break;
         }
     },
@@ -132,11 +131,12 @@ var app = playground({
         this.fantom.x += this.fantom.xs;
         this.fantom.y += this.fantom.ys;
 
+        //collision width border
         if(this.fantom.x > this.width - this.fantom.w){
             this.fantom.x  = this.width - this.fantom.w;
             this.fantom.xs = 0;
-        } else if(this.fantom.x < 0){
-            this.fantom.x  = 0;
+        } else if(this.fantom.x < 100){
+            this.fantom.x  = 100;
             this.fantom.xs = 0;
         }
 
@@ -152,6 +152,9 @@ var app = playground({
 
     render: function(){
         this.layer.clear('#333');
+        this.layer.fillStyle('black');
+        this.layer.fillRect(100, 100, 700, 700);
+
         this.layer.drawImage( this.images[this.fantom.image], this.fantom.x, this.fantom.y);
 
         this.layer.strokeStyle('white');
@@ -159,6 +162,5 @@ var app = playground({
         this.drawBox(this.iB);
 
     }
-
 
 })
