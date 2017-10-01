@@ -79,7 +79,7 @@ var app = playground({
         this.settings = [{}, {}];
 
         this.settings[0] = {
-            image: 'soundOn',
+            image: 'soundOff',
             action: () => {
                 if(app.Music.volume != 0.0){
                     app.Music.volume = 0.0;
@@ -96,12 +96,13 @@ var app = playground({
             action: () => {
                 if(app.controls == app.French){
                     app.controls = app.American;
+                    app.settings[1].image = 'Am'
                 } else {
                     app.controls = app.French;
+                    app.settings[1].image = 'Fr'
                 }
             }
         }
-
 
         //items
         this.desk = {
@@ -124,10 +125,8 @@ var app = playground({
             'pB',
             'soundOn',
             'soundOff',
-            /*'Am',
+            'Am',
             'Fr'
-            'keyboard',
-            'mute'*/
         );
 
         //music load
@@ -274,8 +273,8 @@ var app = playground({
     drawSettings(){
         for(var i = 0; i < this.settings.length; i++){
             var y = this.sB.y - (i*100) - 100;
-            this.layer.fillStyle('black');
-            this.layer.fillRect(710, y + 10, 80, 80);
+            //this.layer.fillStyle('black');
+            //this.layer.fillRect(710, y + 10, 80, 80);
             this.layer.drawImage(this.images[this.settings[i].image], this.settings[i].x, this.settings[i].y)
             this.settings[i].x = 710;
             this.settings[i].y = y + 10;
