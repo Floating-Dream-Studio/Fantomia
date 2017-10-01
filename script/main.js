@@ -6,11 +6,11 @@ function collide(x, y, object){
     }
 }
 
-
 var app = playground({
 
     width : 800,
     height: 800,
+    preferedAudioFormat: "mp3",
 
     create: function(){
         this.fantom = {
@@ -20,7 +20,7 @@ var app = playground({
             xs: 0,
             w: 100,
             h: 100,
-            image: 'g'
+            image: 'ghostieleft'
         }
 
         this.iB = {
@@ -33,7 +33,7 @@ var app = playground({
             image: 'iB'
         }
 
-        this.inventory = [0,0,0,0];
+        this.inventory = [0, 0, 0, 0];
 
         this.sB = {
             x: 100,
@@ -54,8 +54,12 @@ var app = playground({
             'ghostieback',
             'ghostieleft',
             'ghostieright',
-            'ghostiefront',
+            'ghostiefront'
         );
+
+        this.Music = new Audio;
+        this.Music.src = 'sounds/tra.mp3';
+        this.Music.play();
 
         app.mouse.lock();
     },
@@ -128,6 +132,10 @@ var app = playground({
         }
     },
 
+    fantomCollide: function() {
+
+    },
+
     drawUi: function(){
         for(var i = 0; i < this.ui.length; i++){
             this.drawBox(this.ui[i]);
@@ -148,16 +156,16 @@ var app = playground({
         this.fantom.y += this.fantom.ys;
 
         //collision width border
-        if(this.fantom.x > this.width - this.fantom.w){
-            this.fantom.x  = this.width - this.fantom.w;
+        if(this.fantom.x > this.width - this.fantom.w - 100){
+            this.fantom.x  = this.width - this.fantom.w - 100;
             this.fantom.xs = 0;
         } else if(this.fantom.x < 100){
             this.fantom.x  = 100;
             this.fantom.xs = 0;
         }
 
-        if(this.fantom.y > this.width - this.fantom.h){
-            this.fantom.y  = this.height - this.fantom.h;
+        if(this.fantom.y > this.width - this.fantom.h - 100){
+            this.fantom.y  = this.height - this.fantom.h - 100;
             this.fantom.ys = 0;
         } else if(this.fantom.y < 110){
             this.fantom.y  = 110;
@@ -168,8 +176,10 @@ var app = playground({
 
     render: function(){
         this.layer.clear('#333');
-        //this.layer.fillStyle('black');
-        //this.layer.fillRect(100, 100, 700, 700);
+        this.layer.fillStyle('black');
+        this.layer.strokeStyle('white');
+        this.layer.fillRect(100, 100, 600, 600);
+        this.layer.strokeRect(100, 100, 600, 600);
 
         this.layer.drawImage( this.images[this.fantom.image], this.fantom.x, this.fantom.y);
 
