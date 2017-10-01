@@ -33,7 +33,7 @@ var app = playground({
             image: 'iB'
         }
 
-        this.inventory = [];
+        this.inventory = [0,0,0,0];
 
         this.sB = {
             x: 100,
@@ -50,7 +50,12 @@ var app = playground({
 
         this.ui = [this.sB, this.iB];
 
-        this.loadImage('iB', 'setings', 'g', 'g2');
+        this.loadImages('iB', 'setings', 'g', 'g2',
+            'ghostieback',
+            'ghostieleft',
+            'ghostieright',
+            'ghostiefront',
+        );
 
         app.mouse.lock();
     },
@@ -62,23 +67,25 @@ var app = playground({
             case 'q':
                 this.fantom.ys = 0;
                 this.fantom.xs = -2;
-                this.fantom.image = 'g';
+                this.fantom.image = 'ghostieright';
                 break;
 
             case 'd':
                 this.fantom.ys = 0;
                 this.fantom.xs = 2;
-                this.fantom.image = 'g2';
+                this.fantom.image = 'ghostieleft';
                 break;
 
             case 'z':
                 this.fantom.xs = 0;
                 this.fantom.ys = -2;
+                this.fantom.image = 'ghostieback';
                 break;
 
             case 's':
                 this.fantom.xs = 0;
                 this.fantom.ys = 2;
+                this.fantom.image = 'ghostiefront';
                 break;
 
             case 'space':
@@ -95,8 +102,9 @@ var app = playground({
                 this.tween(this.iB)
                     .to({y: this.iB.starty}, 0.5)
             } else {
+                var modif = this.inventory.length * 100;
                 this.tween(this.iB)
-                    .to({y: this.iB.starty + 100}, 0.5)
+                    .to({y: this.iB.starty + modif}, 0.5)
             }
         }
     },
@@ -126,6 +134,14 @@ var app = playground({
         }
     },
 
+    drawInventoryContent(){
+        for(var i = 0; i < this.inventory.length; i++){
+            var y = this.iB.y - (i*100) - 100;
+            this.layer.fillStyle('white');
+            this.layer.fillRect(10, y + 10, 80, 80);
+        }
+    },
+
     step: function(){
 
         this.fantom.x += this.fantom.xs;
@@ -152,15 +168,16 @@ var app = playground({
 
     render: function(){
         this.layer.clear('#333');
-        this.layer.fillStyle('black');
-        this.layer.fillRect(100, 100, 700, 700);
+        //this.layer.fillStyle('black');
+        //this.layer.fillRect(100, 100, 700, 700);
 
         this.layer.drawImage( this.images[this.fantom.image], this.fantom.x, this.fantom.y);
 
         this.layer.strokeStyle('white');
         this.drawBox(this.sB);
         this.drawBox(this.iB);
+        this.drawInventoryContent();
 
     }
 
-})
+});
