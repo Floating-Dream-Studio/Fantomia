@@ -83,16 +83,16 @@ var app = playground({
             action: () => {
                 if(app.Music.volume != 0.0){
                     app.Music.volume = 0.0;
-                    this.image = 'soundOff';
+                    app.settings[0].image = 'soundOff';
                 } else {
                     app.Music.volume = 1.0;
-                    this.image = 'soundOn';
+                    app.settings[0].image = 'soundOn';
                 }
             }
         }
 
         this.settings[1] = {
-            image: 'keyboard',
+            image: 'Fr',
             action: () => {
                 if(app.controls == app.French){
                     app.controls = app.American;
@@ -121,7 +121,12 @@ var app = playground({
             'ghostieleft',
             'ghostieright',
             'ghostiefront',
-            /*'keyboard',
+            'pB',
+            'soundOn',
+            'soundOff',
+            /*'Am',
+            'Fr'
+            'keyboard',
             'mute'*/
         );
 
@@ -269,9 +274,9 @@ var app = playground({
     drawSettings(){
         for(var i = 0; i < this.settings.length; i++){
             var y = this.sB.y - (i*100) - 100;
-            this.layer.fillStyle('white');
+            this.layer.fillStyle('black');
             this.layer.fillRect(710, y + 10, 80, 80);
-            //this.layer.drawImage[this.images[this.settings[i].image]]
+            this.layer.drawImage(this.images[this.settings[i].image], this.settings[i].x, this.settings[i].y)
             this.settings[i].x = 710;
             this.settings[i].y = y + 10;
             this.settings[i].w = 80;
@@ -350,6 +355,7 @@ var app = playground({
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
         this.layer.fillStyle('red');
         this.layer.fillRect(this.pB.x, this.pB.y, this.pB.w, this.pB.h);
+        this.layer.drawImage(this.images['pB'], this.pB.x, this.pB.y);
 
     }
 
