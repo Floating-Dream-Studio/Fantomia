@@ -14,7 +14,7 @@ var app = playground({
 
     create: function(){
         this.fantom = {
-            x: 200,
+            x: 400,
             y: 200,
             ys: 0,
             xs: 0,
@@ -46,6 +46,13 @@ var app = playground({
         this.cursor = {
             x: 0,
             y: 0,
+        }
+
+        this.desk = {
+            x: 250,
+            y: 300,
+            w: 100,
+            h: 100
         }
 
         this.ui = [this.sB, this.iB];
@@ -132,8 +139,14 @@ var app = playground({
         }
     },
 
-    fantomCollide: function() {
-
+    fantomCollide: function(object) {
+        var f = this.fantom;
+        var o = object;
+        if(f.x > o.x + o.w || f.x + f.w < o.x || f.y + f.h < o.y || f.y > o.y + o.h ){
+            return false;
+        } else {
+            return true;
+        }
     },
 
     drawUi: function(){
@@ -172,6 +185,30 @@ var app = playground({
             this.fantom.ys = 0;
         }
 
+        //collision with items
+        if( this.fantomCollide(this.desk) ){
+            var f = this.fantom;
+            var o = this.desk;
+
+            if((f.x + f.w >= o.x && f.x + f.w <= o.x + 5)){
+                //obj is right
+                f.xs = 0;
+                f.x  = o.x - o.w - 1;
+            } else if ((f.x <= o.x + o.w && f.x >= o.x + o.w - 5)){
+                //obj is left
+                f.xs = 0;
+                f.x  = o.x + o.w + 1;
+            } else if((f.y + f.h >= o.y && f.y + f.h <= o.y + 5)){
+                //obj is bot
+                f.ys = 0;
+                f.y  = o.y - o.h - 1;
+            } else if ((f.y <= o.y + o.h && f.y >= o.y + o.h - 5)){
+                //obj is top
+                f.ys = 0;
+                f.y  = o.y + o.h + 1;
+            }
+        }//end collision width items
+
     },
 
     render: function(){
@@ -180,6 +217,7 @@ var app = playground({
         this.layer.strokeStyle('white');
         this.layer.fillRect(100, 100, 600, 600);
         this.layer.strokeRect(100, 100, 600, 600);
+        this.layer.strokeRect(250, 300, 100, 100);
 
         this.layer.drawImage( this.images[this.fantom.image], this.fantom.x, this.fantom.y);
 
