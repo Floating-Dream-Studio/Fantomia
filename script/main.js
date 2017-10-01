@@ -135,13 +135,14 @@ var app = playground({
             'soundOn',
             'soundOff',
             'Am',
-            'Fr'
+            'Fr',
+            'play'
         );
 
         //music load
         this.Music = new Audio;
         this.Music.loop = true;
-        this.Music.src = 'sounds/tra.mp3';
+        this.Music.src  = 'sounds/tra.mp3';
         this.Music.volume = 0.0;
         this.Music.play();
         this.Music.onended = () =>{
@@ -183,6 +184,7 @@ var app = playground({
             case 'space':
                 this.fantom.xs = 0;
                 this.fantom.ys = 0;
+                this.fantom.image = 'ghostiefront';
                 break;
         }
         }
@@ -361,9 +363,9 @@ var app = playground({
 
         this.layer.fillStyle('purple');
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
-        this.layer.fillStyle('red');
-        this.layer.fillRect(this.pB.x, this.pB.y, this.pB.w, this.pB.h);
-        this.layer.drawImage(this.images['pB'], this.pB.x, this.pB.y);
+        //this.layer.fillStyle('red');
+        //this.layer.fillRect(this.pB.x, this.pB.y, this.pB.w, this.pB.h);
+        this.layer.drawImage(this.images['play'], this.pB.x, this.pB.y);
 
     }
 
