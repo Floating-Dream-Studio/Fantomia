@@ -13,6 +13,22 @@ var app = playground({
     preferedAudioFormat: "mp3",
 
     create: function(){
+        this.American = {
+            up: 'w',
+            down: 's',
+            left: 'a',
+            right: 'd',
+        }
+
+        this.French = {
+            up: 'z',
+            down: 's',
+            left: 'q',
+            right: 'd',
+        }
+
+        this.controls = this.French;
+
         this.fantom = {
             x: 400,
             y: 200,
@@ -33,67 +49,119 @@ var app = playground({
             image: 'iB'
         }
 
-        this.inventory = [0, 0, 0, 0];
+        this.inventory = [{}, {}, {}, {}];
 
         this.sB = {
-            x: 100,
+            x: 700,
             y: 0,
             w: 100,
             h: 100,
+            starty: 0,
             image: 'setings'
         }
 
-        this.cursor = {
-            x: 0,
-            y: 0,
+        this.pB = {
+            x: 400 - 50,
+            y: 600,
+            w: 100,
+            h: 50,
         }
 
+        this.intro = {
+            x: 100,
+            y: 100,
+            w: 600,
+            h: 600,
+        }
+
+        this.introDone = false;
+
+        this.settings = [{}, {}];
+
+        this.settings[0] = {
+            image: 'soundOn',
+            action: () => {
+                if(app.Music.volume != 0.0){
+                    app.Music.volume = 0.0;
+                    this.image = 'soundOff';
+                } else {
+                    app.Music.volume = 1.0;
+                    this.image = 'soundOn';
+                }
+            }
+        }
+
+        this.settings[1] = {
+            image: 'keyboard',
+            action: () => {
+                if(app.controls == app.French){
+                    app.controls = app.American;
+                } else {
+                    app.controls = app.French;
+                }
+            }
+        }
+
+
+        //items
         this.desk = {
             x: 250,
             y: 300,
             w: 100,
-            h: 100
+            h: 100,
+            image: 'table',
         }
 
         this.ui = [this.sB, this.iB];
+
+        this.objects = [this.desk];
 
         this.loadImages('iB', 'setings', 'g', 'g2',
             'ghostieback',
             'ghostieleft',
             'ghostieright',
-            'ghostiefront'
+            'ghostiefront',
+            /*'keyboard',
+            'mute'*/
         );
 
+        //music load
         this.Music = new Audio;
+        this.Music.loop = true;
         this.Music.src = 'sounds/tra.mp3';
+        this.Music.volume = 0.0;
         this.Music.play();
+        this.Music.onended = () =>{
+            this.Music.play();
+        }
+
 
     },
 
     //inputs
     keydown: function (e) {
-        console.log(e.key);
-
-        switch (e.key) {
-            case 'q':
+        //console.log(e.key);
+        if(this.introDone){
+            switch (e.key) {
+            case this.controls.left:
                 this.fantom.ys = 0;
                 this.fantom.xs = -2;
                 this.fantom.image = 'ghostieright';
                 break;
 
-            case 'd':
+            case this.controls.right:
                 this.fantom.ys = 0;
                 this.fantom.xs = 2;
                 this.fantom.image = 'ghostieleft';
                 break;
 
-            case 'z':
+            case this.controls.up:
                 this.fantom.xs = 0;
                 this.fantom.ys = -2;
                 this.fantom.image = 'ghostieback';
                 break;
 
-            case 's':
+            case this.controls.down:
                 this.fantom.xs = 0;
                 this.fantom.ys = 2;
                 this.fantom.image = 'ghostiefront';
@@ -104,9 +172,12 @@ var app = playground({
                 this.fantom.ys = 0;
                 break;
         }
+        }
+
     },
 
     mousedown: function(e) {
+        //inventory button
         if(collide(e.x, e.y, this.iB)){
 
             if(this.iB.y != this.iB.starty){
@@ -115,8 +186,36 @@ var app = playground({
             } else {
                 var modif = this.inventory.length * 100;
                 this.tween(this.iB)
-                    .to({y: this.iB.starty + modif}, 0.5)
+                    .to({y: this.iB.starty + modif}, 0.5);
             }
+        }
+
+        //settings button
+        if(collide(e.x, e.y, this.sB)){
+
+            if(this.sB.y != this.sB.starty){
+                this.tween(this.sB)
+                    .to({y: this.sB.starty}, 0.5)
+            } else {
+                var modif = this.settings.length * 100;
+                this.tween(this.sB)
+                    .to({y: this.sB.starty + modif}, 0.5)
+            }
+        }
+
+        //set settings
+        for(var i = 0; i < this.settings.length; i++){
+            if(collide(e.x, e.y, this.settings[i])){
+                this.settings[i].action();
+            }
+        }
+
+        if(collide(e.x, e.y, this.pB)){
+            this.introDone = true;
+            this.tween(this.intro)
+                .to({y: -800}, 0.5);
+            this.tween(this.pB)
+                .to({y: -800}, 0.5);
         }
     },
 
@@ -128,8 +227,6 @@ var app = playground({
                 this.ui[i].hover = false;
             }
         }
-        this.cursor.x = e.x;
-        this.cursor.y = e.y;
     },
 
     //fonctionality
@@ -161,6 +258,24 @@ var app = playground({
             var y = this.iB.y - (i*100) - 100;
             this.layer.fillStyle('white');
             this.layer.fillRect(10, y + 10, 80, 80);
+            //this.layer.drawImage[this.images[this.inventory[i].image]]
+            this.inventory[i].y = y + 10;
+            this.inventory[i].x = 10;
+            this.inventory[i].w = 80;
+            this.inventory[i].h = 80;
+        }
+    },
+
+    drawSettings(){
+        for(var i = 0; i < this.settings.length; i++){
+            var y = this.sB.y - (i*100) - 100;
+            this.layer.fillStyle('white');
+            this.layer.fillRect(710, y + 10, 80, 80);
+            //this.layer.drawImage[this.images[this.settings[i].image]]
+            this.settings[i].x = 710;
+            this.settings[i].y = y + 10;
+            this.settings[i].w = 80;
+            this.settings[i].h = 80;
         }
     },
 
@@ -188,28 +303,30 @@ var app = playground({
         }
 
         //collision with items
-        if( this.fantomCollide(this.desk) ){
-            var f = this.fantom;
-            var o = this.desk;
+        for(var i = 0; i < this.objects.length; i++){
+            if( this.fantomCollide(this.desk) ){
+                var f = this.fantom;
+                var o = this.objects[i];
 
-            if((f.x + f.w >= o.x && f.x + f.w <= o.x + 5)){
-                //obj is right
-                f.xs = 0;
-                f.x  = o.x - o.w - 1;
-            } else if ((f.x <= o.x + o.w && f.x >= o.x + o.w - 5)){
-                //obj is left
-                f.xs = 0;
-                f.x  = o.x + o.w + 1;
-            } else if((f.y + f.h >= o.y && f.y + f.h <= o.y + 5)){
-                //obj is bot
-                f.ys = 0;
-                f.y  = o.y - o.h - 1;
-            } else if ((f.y <= o.y + o.h && f.y >= o.y + o.h - 5)){
-                //obj is top
-                f.ys = 0;
-                f.y  = o.y + o.h + 1;
-            }
-        }//end collision width items
+                if((f.x + f.w >= o.x && f.x + f.w <= o.x + 5)){
+                    //obj is right
+                    f.xs = 0;
+                    f.x  = o.x - o.w - 1;
+                } else if ((f.x <= o.x + o.w && f.x >= o.x + o.w - 5)){
+                    //obj is left
+                    f.xs = 0;
+                    f.x  = o.x + o.w + 1;
+                } else if((f.y + f.h >= o.y && f.y + f.h <= o.y + 5)){
+                    //obj is bot
+                    f.ys = 0;
+                    f.y  = o.y - o.h - 1;
+                } else if ((f.y <= o.y + o.h && f.y >= o.y + o.h - 5)){
+                    //obj is top
+                    f.ys = 0;
+                    f.y  = o.y + o.h + 1;
+                }
+            }//end collision width items
+        }
 
     },
 
@@ -227,6 +344,12 @@ var app = playground({
         this.drawBox(this.sB);
         this.drawBox(this.iB);
         this.drawInventoryContent();
+        this.drawSettings();
+
+        this.layer.fillStyle('purple');
+        this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
+        this.layer.fillStyle('red');
+        this.layer.fillRect(this.pB.x, this.pB.y, this.pB.w, this.pB.h);
 
     }
 
