@@ -13,6 +13,7 @@ var app = playground({
     preferedAudioFormat: "mp3",
 
     create: function(){
+        //controls
         this.American = {
             up: 'w',
             down: 's',
@@ -29,6 +30,7 @@ var app = playground({
 
         this.controls = this.French;
 
+        //player
         this.fantom = {
             x: 400,
             y: 200,
@@ -39,6 +41,7 @@ var app = playground({
             image: 'ghostieleft'
         }
 
+        //buttons box
         this.iB = {
             x: 0,
             y: 0,
@@ -48,8 +51,6 @@ var app = playground({
             starty: 0,
             image: 'iB'
         }
-
-        this.inventory = [{}, {}, {}, {}];
 
         this.sB = {
             x: 700,
@@ -67,6 +68,9 @@ var app = playground({
             h: 50,
         }
 
+        this.ui = [this.sB, this.iB];
+
+        //intro
         this.intro = {
             x: 100,
             y: 100,
@@ -75,6 +79,9 @@ var app = playground({
         }
 
         this.introDone = false;
+
+        //inventory and settings content
+        this.inventory = [{}, {}, {}, {}];
 
         this.settings = [{}, {}];
 
@@ -113,11 +120,13 @@ var app = playground({
             image: 'table',
         }
 
-        this.ui = [this.sB, this.iB];
-
         this.objects = [this.desk];
 
-        this.loadImages('iB', 'setings', 'g', 'g2',
+        this.loadImages(
+            'iB',
+            'setings',
+            'g',
+            'g2',
             'ghostieback',
             'ghostieleft',
             'ghostieright',
