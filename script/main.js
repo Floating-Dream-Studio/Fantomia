@@ -68,9 +68,9 @@ var app = playground({
         this.Music.src = 'sounds/tra.mp3';
         this.Music.play();
 
-        app.mouse.lock();
     },
 
+    //inputs
     keydown: function (e) {
         console.log(e.key);
 
@@ -132,6 +132,7 @@ var app = playground({
         this.cursor.y = e.y;
     },
 
+    //fonctionality
     drawBox: function(object) {
         this.layer.drawImage(this.images[object.image], object.x, object.y);
         if(object.hover){
@@ -163,6 +164,7 @@ var app = playground({
         }
     },
 
+    //game
     step: function(){
 
         this.fantom.x += this.fantom.xs;
