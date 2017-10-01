@@ -115,12 +115,25 @@ var app = playground({
         this.desk = {
             x: 250,
             y: 300,
-            w: 100,
-            h: 100,
+            w: 50,
+            h: 50,
             image: 'table',
+            action: () => {
+                console.log('ACTION')
+            }
         }
 
-        this.objects = [this.desk];
+        this.armor = {
+            x: 500,
+            y: 550,
+            w: 50,
+            h: 50,
+            action: () => {
+                console.log('Action 2')
+            }
+        }
+
+        this.objects = [this.desk, this.armor];
 
         this.loadImages(
             'iB',
@@ -215,7 +228,12 @@ var app = playground({
                 var modif = this.settings.length * 100;
                 this.tween(this.sB)
                     .to({y: this.sB.starty + modif}, 0.5)
+                setTimeout(()=>{
+                    this.tween(this.sB)
+                        .to({y: this.sB.starty}, 0.5)
+                }, 3000);
             }
+
         }
 
         //set settings
@@ -294,6 +312,23 @@ var app = playground({
         }
     },
 
+    drawObjects(){
+        for(var i = 0; i < this.objects.length; i++){
+            var o = this.objects[i];
+            this.layer.strokeStyle('white');
+            this.layer.strokeRect(o.x, o.y, o.w, o.h);
+        }
+    },
+
+    drawObjectsUi(object){
+        for(var i = 0; i < this.objects.length; i++){
+            var o = this.objects[i];
+            if(o.showUi){
+                //this.layer.drawImage()
+            }
+        }
+    },
+
     //game
     step: function(){
 
@@ -319,14 +354,14 @@ var app = playground({
 
         //collision with items
         for(var i = 0; i < this.objects.length; i++){
-            if( this.fantomCollide(this.desk) ){
+            if( this.fantomCollide(this.objects[i]) ){
                 var f = this.fantom;
                 var o = this.objects[i];
-
+                o.action();
                 if((f.x + f.w >= o.x && f.x + f.w <= o.x + 5)){
                     //obj is right
                     f.xs = 0;
-                    f.x  = o.x - o.w - 1;
+                    f.x  = o.x - f.w - 1;
                 } else if ((f.x <= o.x + o.w && f.x >= o.x + o.w - 5)){
                     //obj is left
                     f.xs = 0;
@@ -334,37 +369,36 @@ var app = playground({
                 } else if((f.y + f.h >= o.y && f.y + f.h <= o.y + 5)){
                     //obj is bot
                     f.ys = 0;
-                    f.y  = o.y - o.h - 1;
+                    f.y  = o.y - f.h - 1;
                 } else if ((f.y <= o.y + o.h && f.y >= o.y + o.h - 5)){
                     //obj is top
                     f.ys = 0;
                     f.y  = o.y + o.h + 1;
                 }
-            }//end collision width items
-        }
+            }
+        }//end collision width items
 
     },
 
     render: function(){
         this.layer.clear('#333');
         this.layer.fillStyle('black');
-        this.layer.strokeStyle('white');
         this.layer.fillRect(100, 100, 600, 600);
+
+        this.layer.strokeStyle('white');
         this.layer.strokeRect(100, 100, 600, 600);
-        this.layer.strokeRect(250, 300, 100, 100);
 
         this.layer.drawImage( this.images[this.fantom.image], this.fantom.x, this.fantom.y);
 
-        this.layer.strokeStyle('white');
         this.drawBox(this.sB);
         this.drawBox(this.iB);
         this.drawInventoryContent();
         this.drawSettings();
+        this.drawObjects();
 
+        //intro
         this.layer.fillStyle('purple');
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
-        //this.layer.fillStyle('red');
-        //this.layer.fillRect(this.pB.x, this.pB.y, this.pB.w, this.pB.h);
         this.layer.drawImage(this.images['play'], this.pB.x, this.pB.y);
 
     }
