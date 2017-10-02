@@ -37,7 +37,7 @@ var app = playground({
             ys: 0,
             xs: 0,
             w: 60,
-            h: 100,
+            h: 30,
             hitbox: {
                 x: this.x + 20,
                 y: this.y + 20,
@@ -87,7 +87,7 @@ var app = playground({
         this.introDone = false;
 
         //inventory and settings content
-        this.inventory = [{}, {}, {}, {}];
+        this.inventory = [];
 
         this.settings = [{}, {}];
 
@@ -141,6 +141,18 @@ var app = playground({
 
         this.objects = [this.desk, this.armor];
 
+        this.itemRed = {
+            image: 'c1',
+            imagei: 'c1',
+            x: 300,
+            y: 300,
+            w: 50,
+            h: 50
+        }
+
+        this.collectables = [this.itemRed];
+        this.toCollect = []
+
         this.lab = fillLab();
         this.lab[1] = [0,0,0,1,1,1,0,0,0,1,1,1];
         this.lab[0] = [0,0,0,1,1,1,0,0,0,1,1,1];
@@ -162,7 +174,8 @@ var app = playground({
             'soundOff',
             'Am',
             'Fr',
-            'play'
+            'play',
+            'c1',
         );
 
         //music load
@@ -325,11 +338,12 @@ var app = playground({
             var y = this.iB.y - (i*100) - 100;
             this.layer.fillStyle('white');
             this.layer.fillRect(10, y + 10, 80, 80);
-            //this.layer.drawImage[this.images[this.inventory[i].image]]
-            this.inventory[i].y = y + 10;
-            this.inventory[i].x = 10;
-            this.inventory[i].w = 80;
-            this.inventory[i].h = 80;
+            this.layer.drawImage(this.images[this.inventory[i].imagei], 10,y + 10);
+
+            this.inventory[i].yi = y + 10;
+            this.inventory[i].xi = 10;
+            this.inventory[i].wi = 80;
+            this.inventory[i].hi = 80;
         }
     },
 
@@ -354,11 +368,45 @@ var app = playground({
         }
     },
 
-    drawObjectsUi(object){
-        for(var i = 0; i < this.objects.length; i++){
-            var o = this.objects[i];
-            if(o.showUi){
-                //this.layer.drawImage()
+    drawCollectables(){
+        for(var i = 0; i < this.collectables.length; i++){
+            var c = this.collectables[i]
+            this.layer.drawImage(this.images[c.image], c.x, c.y);
+        }
+    },
+
+    getCollectable(){
+        for(var i = 0; i < this.collectables.length; i++){
+            if(this.fantomCollide(this.collectables[i])){
+                console.log('collide with items')
+                var c = this.collectables[i];
+                var oy = c.y
+                this.toCollect.push(c);
+                this.inventory.push(c);
+                this.collectables.splice(i, 1);
+                console.log(this.toCollect);
+                this.tween(c)
+                    .to({y: oy - 10},0.2)
+                    .to({y: oy}, 0.2, 'outBounce')
+                    .to({y: -100, x: -100}, 0.2)
+                setTimeout(()=>{
+                    this.deleteToCollect();
+                }, 700);
+            }
+        }
+    },
+
+    drawToCollect(){
+        for(var i = 0; i < this.toCollect.length; i++){
+            var c = this.toCollect[i];
+            this.layer.drawImage(this.images[c.image], c.x, c.y);
+        }
+    },
+
+    deleteToCollect(){
+        for(let i = 0; i < this.toCollect.length; i++){
+            if(this.inventory.includes(this.toCollect[i])) {
+                this.toCollect.splice(i, 1);
             }
         }
     },
@@ -450,6 +498,8 @@ var app = playground({
             } else {
                 //this.fantom.collideWith = 'undefined';
             }
+
+            this.getCollectable();
         }//end collision width items
 
     },
@@ -464,15 +514,18 @@ var app = playground({
         this.layer.strokeStyle('white');
         this.layer.strokeRect(100, 100, 600, 600);
 
-        this.layer.drawImage( this.images[this.fantom.image], this.fantom.x - (100 - this.fantom.w)/2, this.fantom.y);
-        //this.layer.strokeRect(this.fantom.hitbox.x, this.fantom.hitbox.y, 60, 60);
-        this.layer.strokeRect(this.fantom.x, this.fantom.y, this.fantom.w, this.fantom.h);
 
         this.drawBox(this.sB);
         this.drawBox(this.iB);
         this.drawInventoryContent();
         this.drawSettings();
         this.drawObjects();
+        this.drawCollectables();
+        this.drawToCollect();
+
+        //player
+        this.layer.drawImage( this.images[this.fantom.image], this.fantom.x - (100 - this.fantom.w)/2, this.fantom.y - 70);
+        //this.layer.strokeRect(this.fantom.x, this.fantom.y, this.fantom.w, this.fantom.h);
 
         //intro
         this.layer.fillStyle('purple');
