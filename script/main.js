@@ -162,7 +162,7 @@ var app = playground({
             this.Music.play();
         }
 
-
+        this.loadChapter(1);
     },
 
     //inputs
@@ -170,36 +170,40 @@ var app = playground({
         //console.log(e.key);
         if(this.introDone){
             switch (e.key) {
-            case this.controls.left:
-                this.fantom.ys = 0;
-                this.fantom.xs = -2;
-                this.fantom.image = 'ghostieright';
-                break;
+                case this.controls.left:
+                    this.fantom.ys = 0;
+                    this.fantom.xs = -2;
+                    this.fantom.image = 'ghostieright';
+                    break;
 
-            case this.controls.right:
-                this.fantom.ys = 0;
-                this.fantom.xs = 2;
-                this.fantom.image = 'ghostieleft';
-                break;
+                case this.controls.right:
+                    this.fantom.ys = 0;
+                    this.fantom.xs = 2;
+                    this.fantom.image = 'ghostieleft';
+                    break;
 
-            case this.controls.up:
-                this.fantom.xs = 0;
-                this.fantom.ys = -2;
-                this.fantom.image = 'ghostieback';
-                break;
+                case this.controls.up:
+                    this.fantom.xs = 0;
+                    this.fantom.ys = -2;
+                    this.fantom.image = 'ghostieback';
+                    break;
 
-            case this.controls.down:
-                this.fantom.xs = 0;
-                this.fantom.ys = 2;
-                this.fantom.image = 'ghostiefront';
-                break;
+                case this.controls.down:
+                    this.fantom.xs = 0;
+                    this.fantom.ys = 2;
+                    this.fantom.image = 'ghostiefront';
+                    break;
 
-            case 'space':
-                this.fantom.xs = 0;
-                this.fantom.ys = 0;
-                this.fantom.image = 'ghostiefront';
-                break;
-        }
+                case 'space':
+                    this.fantom.xs = 0;
+                    this.fantom.ys = 0;
+                    this.fantom.image = 'ghostiefront';
+                    break;
+
+                case 'e':
+                    this.fantom.collideWith.action();
+                    break;
+            }
         }
 
     },
@@ -279,7 +283,21 @@ var app = playground({
         if(f.x > o.x + o.w || f.x + f.w < o.x || f.y + f.h < o.y || f.y > o.y + o.h ){
             return false;
         } else {
+            f.collideWith = o;
             return true;
+        }
+    },
+
+    //maybe redefine whatCollide
+    whatCollide: function() {
+        var f = this.fantom;
+        for(var i = 0; i < this.objects.length; i++){
+            var o = this.objects[i];
+            if(f.x > o.x + o.w || f.x + f.w < o.x || f.y + f.h < o.y || f.y > o.y + o.h ){
+                return false;
+            } else {
+                return i;
+            }
         }
     },
 
@@ -333,8 +351,8 @@ var app = playground({
     },
 
     loadChapter: function(index){
-        index.load();
-
+        chapter[index].load();
+        this.chapter = chapter[index];
     },
 
     //game
@@ -365,7 +383,9 @@ var app = playground({
             if( this.fantomCollide(this.objects[i]) ){
                 var f = this.fantom;
                 var o = this.objects[i];
-                o.action();
+                //o.action();
+                f.collideWith = o;
+
                 if((f.x + f.w >= o.x && f.x + f.w <= o.x + 5)){
                     //obj is right
                     f.xs = 0;
@@ -383,6 +403,8 @@ var app = playground({
                     f.ys = 0;
                     f.y  = o.y + o.h + 1;
                 }
+            } else {
+                //this.fantom.collideWith = 'undefined';
             }
         }//end collision width items
 
@@ -409,6 +431,10 @@ var app = playground({
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
         this.layer.drawImage(this.images['play'], this.pB.x, this.pB.y);
 
+        //chapter
+        //this.layer.font('32px Arial');
+        //this.layer.fillStyle('white');
+        //this.layer.fillText('chapitre ' + this.chapter.index + ' : ' + this.chapter.title, 300, 80);
     }
 
 });
