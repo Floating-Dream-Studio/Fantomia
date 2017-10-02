@@ -151,7 +151,11 @@ var app = playground({
         }
 
         this.collectables = [this.itemRed];
-        this.toCollect = []
+        this.toCollect = [];
+
+        this.actualCollectPannel = {
+            //window for collectables items
+        };
 
         this.lab = fillLab();
         this.lab[1] = [0,0,0,1,1,1,0,0,0,1,1,1];
@@ -532,6 +536,7 @@ var app = playground({
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
         this.layer.drawImage(this.images['play'], this.pB.x, this.pB.y);
 
+        //draw items and collectables pannels
 
         //chapter
         //this.layer.font('32px Arial');
