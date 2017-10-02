@@ -205,6 +205,15 @@ var app = playground({
     },
 
     mousedown: function(e) {
+        //play
+        if(collide(e.x, e.y, this.pB)){
+            this.introDone = true;
+            this.tween(this.intro)
+                .to({y: -800}, 0.5);
+            this.tween(this.pB)
+                .to({y: -800}, 0.5);
+        }
+
         //inventory button
         if(collide(e.x, e.y, this.iB)){
 
@@ -228,6 +237,7 @@ var app = playground({
                 var modif = this.settings.length * 100;
                 this.tween(this.sB)
                     .to({y: this.sB.starty + modif}, 0.5)
+
                 setTimeout(()=>{
                     this.tween(this.sB)
                         .to({y: this.sB.starty}, 0.5)
@@ -243,13 +253,6 @@ var app = playground({
             }
         }
 
-        if(collide(e.x, e.y, this.pB)){
-            this.introDone = true;
-            this.tween(this.intro)
-                .to({y: -800}, 0.5);
-            this.tween(this.pB)
-                .to({y: -800}, 0.5);
-        }
     },
 
     mousemove: function (e) {
@@ -327,6 +330,11 @@ var app = playground({
                 //this.layer.drawImage()
             }
         }
+    },
+
+    loadChapter: function(index){
+        index.load();
+
     },
 
     //game
