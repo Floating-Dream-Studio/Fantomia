@@ -36,8 +36,14 @@ var app = playground({
             y: 200,
             ys: 0,
             xs: 0,
-            w: 100,
+            w: 60,
             h: 100,
+            hitbox: {
+                x: this.x + 20,
+                y: this.y + 20,
+                h: 60,
+                w: 60
+            },
             image: 'ghostieleft'
         }
 
@@ -70,7 +76,7 @@ var app = playground({
 
         this.ui = [this.sB, this.iB];
 
-        //intro
+        //intro box (tuto)
         this.intro = {
             x: 100,
             y: 100,
@@ -134,6 +140,13 @@ var app = playground({
         }
 
         this.objects = [this.desk, this.armor];
+
+        this.lab = fillLab();
+        this.lab[1] = [0,0,0,1,1,1,0,0,0,1,1,1];
+        this.lab[0] = [0,0,0,1,1,1,0,0,0,1,1,1];
+        this.lab[1] = [0,0,0,1,0,1,0,0,0,0,0,0];
+
+        //this.buildMap(this.lab);
 
         this.loadImages(
             'iB',
@@ -355,11 +368,43 @@ var app = playground({
         this.chapter = chapter[index];
     },
 
+    displayMap: function(lab) {
+        for(var y = 0; y < 12; y++){
+            for(var x = 0; x < 12; x++){
+                if(lab[y][x] == '1'){
+                    this.layer.fillStyle('red');
+                    this.layer.fillRect(x*50 + 100, y*50 + 100, 50, 50);
+                }
+            }
+        }
+    },
+
+    buildMap: function(lab) {
+        for(var y = 0; y < 12; y++){
+            for(var x = 0; x < 12; x++){
+                if(lab[y][x] == 1){
+                    this.objects.push({
+                        x: x*50 + 100,
+                        y: y*50 + 100,
+                        w: 50,
+                        h: 50,
+                    })
+                }
+            }
+
+        }
+    },
+
     //game
     step: function(){
 
         this.fantom.x += this.fantom.xs;
         this.fantom.y += this.fantom.ys;
+
+        this.fantom.hitbox.x = this.fantom.x + 20;
+        this.fantom.hitbox.y = this.fantom.y + 20;
+        this.fantom.hitbox.w = 60;
+        this.fantom.hitbox.h = 60;
 
         //collision width border
         if(this.fantom.x > this.width - this.fantom.w - 100){
@@ -383,7 +428,6 @@ var app = playground({
             if( this.fantomCollide(this.objects[i]) ){
                 var f = this.fantom;
                 var o = this.objects[i];
-                //o.action();
                 f.collideWith = o;
 
                 if((f.x + f.w >= o.x && f.x + f.w <= o.x + 5)){
@@ -415,10 +459,14 @@ var app = playground({
         this.layer.fillStyle('black');
         this.layer.fillRect(100, 100, 600, 600);
 
+        //this.displayMap(this.lab);
+
         this.layer.strokeStyle('white');
         this.layer.strokeRect(100, 100, 600, 600);
 
-        this.layer.drawImage( this.images[this.fantom.image], this.fantom.x, this.fantom.y);
+        this.layer.drawImage( this.images[this.fantom.image], this.fantom.x - (100 - this.fantom.w)/2, this.fantom.y);
+        //this.layer.strokeRect(this.fantom.hitbox.x, this.fantom.hitbox.y, 60, 60);
+        this.layer.strokeRect(this.fantom.x, this.fantom.y, this.fantom.w, this.fantom.h);
 
         this.drawBox(this.sB);
         this.drawBox(this.iB);
@@ -430,6 +478,7 @@ var app = playground({
         this.layer.fillStyle('purple');
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
         this.layer.drawImage(this.images['play'], this.pB.x, this.pB.y);
+
 
         //chapter
         //this.layer.font('32px Arial');
