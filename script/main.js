@@ -6,6 +6,8 @@ function collide(x, y, object){
     }
 }
 
+
+
 var app = playground({
 
     width : 800,
@@ -228,7 +230,9 @@ var app = playground({
                     break;
 
                 case 'e':
-                    this.fantom.collideWith.action();
+                    if(dist(this.fantom, this.fantom.collideWith) < 60){
+                        this.fantom.collideWith.action();
+                    }
                     break;
             }
         }
@@ -412,12 +416,13 @@ var app = playground({
     },
 
     loadMap: function(map){
-        this.actualMap = map;
+        this.actualMap   = map;
         this.actualRoomX = map.startx;
         this.actualRoomY = map.starty;
-        this.actualRoom = map.rooms[map.starty][map.startx];
+        this.actualRoom  = map.rooms[map.starty][map.startx];
         this.objects = this.actualRoom.items;
-
+        //collectables
+        //pnjs
         for(var i = 0; i < map.rooms.length; i++){
             for(var b = 0; b < map.rooms[i].length; b++){
                 //this.loadImages(map.rooms[i].image);

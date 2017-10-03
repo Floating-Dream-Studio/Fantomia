@@ -1,4 +1,5 @@
 
+
 //rooms Manoire
 var manoire1 = {
     name  : 'salon',
