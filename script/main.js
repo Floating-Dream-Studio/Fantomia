@@ -9,7 +9,7 @@ function collide(x, y, object){
 var app = playground({
 
     width : 800,
-    height: 800,
+    height: 1000,
     preferedAudioFormat: "mp3",
 
     create: function(){
@@ -103,7 +103,7 @@ var app = playground({
                 }
             }
         }
-
+        
         this.settings[1] = {
             image: 'Fr',
             action: () => {
@@ -118,7 +118,7 @@ var app = playground({
         }
 
         //items
-        this.desk = {
+        /*this.desk = {
             x: 250,
             y: 300,
             w: 50,
@@ -129,7 +129,7 @@ var app = playground({
             }
         }
 
-        this.armor = {
+        //this.armor = {
             x: 500,
             y: 550,
             w: 50,
@@ -139,7 +139,8 @@ var app = playground({
             }
         }
 
-        this.objects = [this.desk, this.armor];
+        //this.objects = [this.desk, this.armor];
+        */
 
         this.itemRed = {
             image: 'c1',
@@ -156,11 +157,6 @@ var app = playground({
         this.actualCollectPannel = {
             //window for collectables items
         };
-
-        this.lab = fillLab();
-        this.lab[1] = [0,0,0,1,1,1,0,0,0,1,1,1];
-        this.lab[0] = [0,0,0,1,1,1,0,0,0,1,1,1];
-        this.lab[1] = [0,0,0,1,0,1,0,0,0,0,0,0];
 
         //this.buildMap(this.lab);
 
@@ -192,7 +188,8 @@ var app = playground({
             this.Music.play();
         }
 
-        this.loadChapter(1);
+        this.loadMap(Manoire);
+
     },
 
     //inputs
@@ -337,12 +334,12 @@ var app = playground({
         }
     },
 
-    drawInventoryContent(){
+    drawInventoryContent: function(){
         for(var i = 0; i < this.inventory.length; i++){
             var y = this.iB.y - (i*100) - 100;
             this.layer.fillStyle('white');
             this.layer.fillRect(10, y + 10, 80, 80);
-            this.layer.drawImage(this.images[this.inventory[i].imagei], 10,y + 10);
+            this.layer.drawImage(this.images[this.inventory[i].imagei], 25, y + 25);
 
             this.inventory[i].yi = y + 10;
             this.inventory[i].xi = 10;
@@ -351,7 +348,7 @@ var app = playground({
         }
     },
 
-    drawSettings(){
+    drawSettings: function(){
         for(var i = 0; i < this.settings.length; i++){
             var y = this.sB.y - (i*100) - 100;
             //this.layer.fillStyle('black');
@@ -364,7 +361,7 @@ var app = playground({
         }
     },
 
-    drawObjects(){
+    drawObjects: function(){
         for(var i = 0; i < this.objects.length; i++){
             var o = this.objects[i];
             this.layer.strokeStyle('white');
@@ -372,23 +369,22 @@ var app = playground({
         }
     },
 
-    drawCollectables(){
+    drawCollectables: function(){
         for(var i = 0; i < this.collectables.length; i++){
             var c = this.collectables[i]
             this.layer.drawImage(this.images[c.image], c.x, c.y);
         }
     },
 
-    getCollectable(){
+    getCollectable: function(){
         for(var i = 0; i < this.collectables.length; i++){
             if(this.fantomCollide(this.collectables[i])){
-                console.log('collide with items')
                 var c = this.collectables[i];
                 var oy = c.y
                 this.toCollect.push(c);
                 this.inventory.push(c);
                 this.collectables.splice(i, 1);
-                console.log(this.toCollect);
+                //console.log(this.toCollect);
                 this.tween(c)
                     .to({y: oy - 10},0.2)
                     .to({y: oy}, 0.2, 'outBounce')
@@ -400,14 +396,14 @@ var app = playground({
         }
     },
 
-    drawToCollect(){
+    drawToCollect: function(){
         for(var i = 0; i < this.toCollect.length; i++){
             var c = this.toCollect[i];
             this.layer.drawImage(this.images[c.image], c.x, c.y);
         }
     },
 
-    deleteToCollect(){
+    deleteToCollect: function(){
         for(let i = 0; i < this.toCollect.length; i++){
             if(this.inventory.includes(this.toCollect[i])) {
                 this.toCollect.splice(i, 1);
@@ -415,20 +411,33 @@ var app = playground({
         }
     },
 
+    /*
     loadChapter: function(index){
         chapter[index].load();
         this.chapter = chapter[index];
     },
+    */
 
-    displayMap: function(lab) {
-        for(var y = 0; y < 12; y++){
-            for(var x = 0; x < 12; x++){
-                if(lab[y][x] == '1'){
-                    this.layer.fillStyle('red');
-                    this.layer.fillRect(x*50 + 100, y*50 + 100, 50, 50);
-                }
+    loadMap: function(map){
+        this.actualMap = map;
+        this.actualRoom = map.rooms[map.starty][map.startx];
+        this.objects = this.actualRoom.items;
+
+        for(var i = 0; i < map.rooms.length; i++){
+            for(var b = 0; b < map.rooms[i].length; b++){
+                //this.loadImages(map.rooms[i].image);
+                console.log(map.rooms[i][b].image);
             }
         }
+    },
+
+    mapUp: function(){
+
+    },
+
+    displayMap: function() {
+        var bg = this.actualMap.image;
+        this.layer.drawImage(bg, 100, 100);
     },
 
     buildMap: function(lab) {
