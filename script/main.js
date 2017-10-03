@@ -178,6 +178,7 @@ var app = playground({
             'Fr',
             'play',
             'c1',
+            'plancher'
         );
 
         //music load
@@ -560,6 +561,8 @@ var app = playground({
         this.layer.clear('#333');
         this.layer.fillStyle('black');
         this.layer.fillRect(100, 100, 600, 600);
+
+        this.layer.drawImage(this.images['plancher'], 100, 100);
 
         //this.displayMap(this.lab);
 
