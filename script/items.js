@@ -1,5 +1,3 @@
-
-
 function dist(obj, obj2){
     var a = {
         x: obj.x + (obj.w/2),
