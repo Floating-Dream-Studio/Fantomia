@@ -103,7 +103,7 @@ var app = playground({
                 }
             }
         }
-        
+
         this.settings[1] = {
             image: 'Fr',
             action: () => {
@@ -411,15 +411,10 @@ var app = playground({
         }
     },
 
-    /*
-    loadChapter: function(index){
-        chapter[index].load();
-        this.chapter = chapter[index];
-    },
-    */
-
     loadMap: function(map){
         this.actualMap = map;
+        this.actualRoomX = map.startx;
+        this.actualRoomY = map.starty;
         this.actualRoom = map.rooms[map.starty][map.startx];
         this.objects = this.actualRoom.items;
 
@@ -432,7 +427,46 @@ var app = playground({
     },
 
     mapUp: function(){
+        if(this.actualRoomY >= 1){
+            var a = this.actualRoomY - 1;
+            var b = this.actualRoomX;
+            this.actualRoomY = a;
+            this.actualRoomX = b;
+            this.actualRoom = this.actualMap.rooms[a][b];
+        }
+    },
 
+    mapDown: function(){
+        if(this.actualRoomY < this.actualMap.rooms.length-1){
+            //console.log('d')
+            var a = this.actualRoomY + 1;
+            var b = this.actualRoomX;
+            this.actualRoomY = a;
+            this.actualRoomX = b;
+            this.actualRoom = this.actualMap.rooms[a][b];
+        }
+    },
+
+    mapRight: function(){
+        if(this.actualRoomX < 2){
+            var a = this.actualRoomY;
+            var b = this.actualRoomX + 1;
+            this.actualRoomY = a;
+            this.actualRoomX = b;
+            this.actualRoom = this.actualMap.rooms[a][b];
+        }
+        //set fantom position
+    },
+
+    mapLeft: function(){
+        if(this.actualRoomX >= 1){
+            var a = this.actualRoomY;
+            var b = this.actualRoomX - 1;
+            this.actualRoomY = a;
+            this.actualRoomX = b;
+            this.actualRoom = this.actualMap.rooms[a][b];
+        }
+        //set fantom position
     },
 
     displayMap: function() {
