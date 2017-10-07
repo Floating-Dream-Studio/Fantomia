@@ -432,6 +432,7 @@ var app = playground({
     },
 
     mapUp: function(){
+        this.actualRoom.collectables = this.collectables;
         if(this.actualRoomY >= 1){
             var a = this.actualRoomY - 1;
             var b = this.actualRoomX;
@@ -439,11 +440,12 @@ var app = playground({
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
             this.transit = true;
-            //this.objects = this.actualRoom.items;
+            this.objects = this.actualRoom.items;
         }
     },
 
     mapDown: function(){
+        this.actualRoom.collectables = this.collectables;
         if(this.actualRoomY < this.actualMap.rooms.length-1){
             var a = this.actualRoomY + 1;
             var b = this.actualRoomX;
@@ -457,6 +459,7 @@ var app = playground({
     },
 
     mapRight: function(){
+        this.actualRoom.collectables = this.collectables;
         if(this.actualRoomX < this.actualMap.rooms[0].length-1){
             var a = this.actualRoomY;
             var b = this.actualRoomX + 1;
@@ -470,6 +473,7 @@ var app = playground({
     },
 
     mapLeft: function(){
+        this.actualRoom.collectables = this.collectables;
         if(this.actualRoomX >= 1){
             var a = this.actualRoomY;
             var b = this.actualRoomX - 1;
