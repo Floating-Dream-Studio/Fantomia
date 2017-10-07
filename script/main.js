@@ -541,11 +541,27 @@ var app = playground({
         }
 
         if(this.fantom.y > this.height - this.fantom.h - 100 - 200){
-            this.fantom.y  = this.height - this.fantom.h - 100 - 200;
-            this.fantom.ys = 0;
-        } else if(this.fantom.y < 110){
-            this.fantom.y  = 110;
-            this.fantom.ys = 0;
+            //this.fantom.y  = this.height - this.fantom.h - 100 - 200;
+            //this.fantom.ys = 0;
+
+            if(this.actualRoomY < this.actualMap.rooms.length-1){
+                this.mapDown();
+                this.fantom.y  = 210;
+            } else {
+                this.fantom.y  = this.height - this.fantom.h - 100 - 200;
+                this.fantom.ys = 0;
+            }
+
+        } else if(this.fantom.y < this.actualRoom.wallY){
+            //this.fantom.y  = 110;
+            //this.fantom.ys = 0;
+            if(this.actualRoomY >= 1){
+                this.mapUp();
+                this.fantom.y  = this.height - this.fantom.h - 100 - 200;
+            } else {
+                this.fantom.y  = this.actualRoom.wallY;
+                this.fantom.ys = 0;
+            }
         }
 
         //collision with items
@@ -620,6 +636,9 @@ var app = playground({
         }
         //draw items and collectables pannels
 
+        this.layer.fillStyle('white');
+        this.layer.font('32px Arial');
+        this.layer.fillText(this.actualRoom.name, 300, 50);
     }
 
 });
