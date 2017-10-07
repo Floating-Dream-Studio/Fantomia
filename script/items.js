@@ -22,6 +22,6 @@ var desk =  {
     h: 50,
     image: 'table',
     action: () => {
-        console.log('ACTION')
+        app.Music.volume = 0.0;
     }
 };

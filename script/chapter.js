@@ -10,11 +10,13 @@ var manoire1 = {
 var manoire2 = {
     name  : 'bibliotheque',
     image : 'biblio',
+    items : []
 }
 
 var manoire3 = {
     name  : 'cave',
-    image : 'cave'
+    image : 'cave',
+    items : []
 }
 
 

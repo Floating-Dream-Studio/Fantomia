@@ -6,8 +6,6 @@ function collide(x, y, object){
     }
 }
 
-
-
 var app = playground({
 
     width : 800,
@@ -384,6 +382,7 @@ var app = playground({
     getCollectable: function(){
         for(var i = 0; i < this.collectables.length; i++){
             if(this.fantomCollide(this.collectables[i])){
+                console.log('collect')
                 var c = this.collectables[i];
                 var oy = c.y
                 this.toCollect.push(c);
@@ -439,29 +438,35 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
+            this.transit = true;
+            //this.objects = this.actualRoom.items;
         }
     },
 
     mapDown: function(){
         if(this.actualRoomY < this.actualMap.rooms.length-1){
-            //console.log('d')
             var a = this.actualRoomY + 1;
             var b = this.actualRoomX;
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
+            this.transit = true;
+            this.objects = this.actualRoom.items;
+            //collectables
         }
     },
 
     mapRight: function(){
-        if(this.actualRoomX < 2){
+        if(this.actualRoomX < this.actualMap.rooms[0].length-1){
             var a = this.actualRoomY;
             var b = this.actualRoomX + 1;
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
+            this.transit = true;
+            this.objects = this.actualRoom.items;
+            //collectables
         }
-        //set fantom position
     },
 
     mapLeft: function(){
@@ -471,8 +476,10 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
+            this.transit = true;
+            this.objects = this.actualRoom.items;
+            //collectables
         }
-        //set fantom position
     },
 
     displayMap: function() {
@@ -509,15 +516,32 @@ var app = playground({
 
         //collision width border
         if(this.fantom.x > this.width - this.fantom.w - 100){
-            this.fantom.x  = this.width - this.fantom.w - 100;
-            this.fantom.xs = 0;
+            //this.fantom.x  = this.width - this.fantom.w - 100;
+            //this.fantom.xs = 0;
+
+            if(this.actualRoomX < 2){
+                this.mapRight();
+                this.fantom.x  = 100;
+            } else {
+                this.fantom.x  = this.width - this.fantom.w - 100;
+                this.fantom.xs = 0;
+            }
+
         } else if(this.fantom.x < 100){
-            this.fantom.x  = 100;
-            this.fantom.xs = 0;
+            //this.fantom.x  = 100;
+            //this.fantom.xs = 0;
+
+            if(this.actualRoomX > 0){
+                this.mapLeft();
+                this.fantom.x  = this.width - this.fantom.w - 100;
+            } else {
+                this.fantom.x  = 100;
+                this.fantom.xs = 0;
+            }
         }
 
-        if(this.fantom.y > this.width - this.fantom.h - 100){
-            this.fantom.y  = this.height - this.fantom.h - 100;
+        if(this.fantom.y > this.height - this.fantom.h - 100 - 200){
+            this.fantom.y  = this.height - this.fantom.h - 100 - 200;
             this.fantom.ys = 0;
         } else if(this.fantom.y < 110){
             this.fantom.y  = 110;
@@ -552,9 +576,14 @@ var app = playground({
                 //this.fantom.collideWith = 'undefined';
             }
 
-            this.getCollectable();
-        }//end collision width items
 
+        }//end collision width items
+        if(this.transit){
+            setTimeout(()=>{
+                this.transit = false;
+            }, 300);
+        }
+        this.getCollectable();
     },
 
     render: function(){
@@ -563,8 +592,6 @@ var app = playground({
         this.layer.fillRect(100, 100, 600, 600);
 
         this.layer.drawImage(this.images['plancher'], 100, 100);
-
-        //this.displayMap(this.lab);
 
         this.layer.strokeStyle('white');
         this.layer.strokeRect(100, 100, 600, 600);
@@ -587,12 +614,12 @@ var app = playground({
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
         this.layer.drawImage(this.images['play'], this.pB.x, this.pB.y);
 
+        if(this.transit){
+            this.layer.fillStyle('black');
+            this.layer.fillRect(100, 100, 600, 600);
+        }
         //draw items and collectables pannels
 
-        //chapter
-        //this.layer.font('32px Arial');
-        //this.layer.fillStyle('white');
-        //this.layer.fillText('chapitre ' + this.chapter.index + ' : ' + this.chapter.title, 300, 80);
     }
 
 });
