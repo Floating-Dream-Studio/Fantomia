@@ -33,6 +33,12 @@ var app = playground({
 
         this.controls = this.French;
         this.canMoove = true;
+
+        this.transit = {
+            alpha: 0,
+            show: false,
+        }
+
         //player
         this.fantom = {
             x: 400,
@@ -409,6 +415,7 @@ var app = playground({
         this.actualRoomY = map.starty;
         this.actualRoom  = map.rooms[map.starty][map.startx];
         this.objects = this.actualRoom.items;
+        this.bg = this.actualRoom.image;
         //collectables
         //pnjs
         for(var i = 0; i < map.rooms.length; i++){
@@ -423,88 +430,94 @@ var app = playground({
     },
 
     drawMap: function() {
-        var mapImage = this.actualRoom.image;
-        var img = this.images[mapImage];
-        this.layer.drawImage(img, 100, 100);
+        //var mapImage = this.actualRoom.image;
+        //var img = this.images[mapImage];
+        if(this.bg){
+            var img = this.images[this.bg];
+            this.layer.drawImage(img, 100, 100);
+        }
     },
 
-    mapUp: function() {
+    drawTransition: function(){
+        if(true){
+            this.layer.save();
+            this.layer.a(this.transit.alpha);
+            this.layer.fillStyle('black');
+            this.layer.fillRect(100,100,600,600);
+            this.layer.restore();
+        }
+    },
+
+    lauchTransition: function(x, y) {
+        this.transit.show = true;
+        this.canMoove = false;
+        setTimeout(()=>{
+            this.transit.show = false;
+            this.canMoove = true;
+            this.bg = this.actualRoom.image;
+            this.fantom.y = y;
+            this.fantom.x = x;
+        }, 1000);
+        this.tween(this.transit)
+            .to({alpha: 1}, 0.5).wait(0.5)
+            .to({alpha: 0}, 0.8)
+    },
+
+    mapUp: function(x, y) {
         this.actualRoom.collectables = this.collectables;
         if(this.actualRoomY >= 1){
+            this.lauchTransition(x, y);
             var a = this.actualRoomY - 1;
             var b = this.actualRoomX;
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            this.transit = true;
             this.objects = this.actualRoom.items;
 
-            this.transit = true;
-            this.canMoove = false;
-            setTimeout(()=>{
-                this.transit = false;
-                this.canMoove = true;
-            }, 1000);
+
         }
     },
 
-    mapDown: function() {
+    mapDown: function(x, y) {
         this.actualRoom.collectables = this.collectables;
         if(this.actualRoomY < this.actualMap.rooms.length-1){
+            this.lauchTransition(x, y);
             var a = this.actualRoomY + 1;
             var b = this.actualRoomX;
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            this.transit = true;
             this.objects = this.actualRoom.items;
             //collectables
-            this.transit = true;
-            this.canMoove = false;
-            setTimeout(()=>{
-                this.transit = false;
-                this.canMoove = true;
-            }, 1000);
         }
     },
 
-    mapRight: function() {
+    mapRight: function(x, y) {
         this.actualRoom.collectables = this.collectables;
         if(this.actualRoomX < this.actualMap.rooms[0].length-1){
+            this.lauchTransition(x, y);
             var a = this.actualRoomY;
             var b = this.actualRoomX + 1;
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            this.transit = true;
             this.objects = this.actualRoom.items;
             //collectables
-            this.transit = true;
-            this.canMoove = false;
-            setTimeout(()=>{
-                this.transit = false;
-                this.canMoove = true;
-            }, 1000);
+            //this.canMoove = false;
         }
     },
 
-    mapLeft: function() {
+    mapLeft: function(x, y) {
         this.actualRoom.collectables = this.collectables;
         if(this.actualRoomX >= 1){
+            this.lauchTransition(x, y);
             var a = this.actualRoomY;
             var b = this.actualRoomX - 1;
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            this.transit = true;
             this.objects = this.actualRoom.items;
             //collectables
-            this.transit = true;
-            this.canMoove = false;
-            setTimeout(()=>{
-                this.transit = false;
-                this.canMoove = true;
-            }, 1000);
         }
     },
 
@@ -559,8 +572,10 @@ var app = playground({
             this.fantom.x = this.width - this.fantom.w - 101;
 
             if(this.actualRoomX < 2){
-                this.mapRight();
-                this.fantom.x  = 101;
+                let x  = 101;
+                let y  = this.fantom.y;
+                this.mapRight(x, y);
+                //this.fantom.x  = 101;
                 this.canMoove = false;
             } else {
                 this.fantom.x  = this.width - this.fantom.w - 101;
@@ -573,8 +588,10 @@ var app = playground({
             this.fantom.x  = 101;
 
             if(this.actualRoomX > 0){
-                this.mapLeft();
-                this.fantom.x  = this.width - this.fantom.w - 101;
+                let x  = this.width - this.fantom.w - 101;
+                let y = this.fantom.y;
+                this.mapLeft(x, y);
+                //this.fantom.x  = this.width - this.fantom.w - 101;
                 this.canMoove = false;
 
             } else {
@@ -588,8 +605,10 @@ var app = playground({
             this.fantom.ys = 0;
 
             if(this.actualRoomY < this.actualMap.rooms.length-1){
-                this.mapDown();
-                this.fantom.y  = 210;
+                let x = this.fantom.x;
+                let y = 210;
+                this.mapDown(x, y);
+                //this.fantom.y  = 210;
                 this.canMoove = false;
             } else {
                 this.fantom.y  = this.height - this.fantom.h - 100 - 201;
@@ -600,8 +619,10 @@ var app = playground({
             //this.fantom.y  = 110;
             this.fantom.ys = 0;
             if(this.actualRoomY >= 1){
+                let x = this.fantom.x;
+                let y = this.height - this.fantom.h - 100 - 200;
                 this.mapUp();
-                this.fantom.y  = this.height - this.fantom.h - 100 - 200;
+                //this.fantom.y  = this.height - this.fantom.h - 100 - 200;
                 this.canMoove = false;
             } else {
                 this.fantom.y  = this.actualRoom.wallY;
@@ -639,16 +660,12 @@ var app = playground({
 
 
         }//end collision width items
-        /*if(this.transit){
-            setTimeout(()=>{
-                this.transit = false;
-                this.canMoove = true;
-            }, 1000);
-        }*/
+
         this.getCollectable();
     },
 
     render: function(){
+
         this.layer.clear('#333');
         this.layer.fillStyle('black');
         this.layer.fillRect(100, 100, 600, 600);
@@ -677,10 +694,12 @@ var app = playground({
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
         this.layer.drawImage(this.images['play'], this.pB.x, this.pB.y);
 
-        if(this.transit){
+        /*if(this.transit.show){
             this.layer.fillStyle('black');
             this.layer.fillRect(100, 100, 600, 600);
-        }
+        }*/
+        this.drawTransition();
+
         //draw items and collectables pannels
 
         this.layer.fillStyle('white');
@@ -688,7 +707,9 @@ var app = playground({
         this.layer.fillText(this.actualRoom.name, 300, 50);
 
         //this.layer.fillRect(100, 750, 30, 20)
-        this.drawMiniMap(100, 750)
+        this.drawMiniMap(100, 750);
+
+
     }
 
 });
