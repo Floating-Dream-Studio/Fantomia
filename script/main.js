@@ -327,7 +327,8 @@ var app = playground({
             var y = this.iB.y - (i*100) - 100;
             this.layer.fillStyle('white');
             this.layer.fillRect(10, y + 10, 80, 80);
-            this.layer.drawImage(this.images[this.inventory[i].image], 25, y + 25);
+            var img = this.images[this.inventory[i].image];
+            this.layer.context.drawImage(img, 0, 0, img.width, img.height, 10, y + 10, 80, 80);
 
             this.inventory[i].yi = y + 10;
             this.inventory[i].xi = 10;
@@ -350,10 +351,13 @@ var app = playground({
     },
 
     drawObjects: function() {
-        for(var i = 0; i < this.objects.length; i++){
-            var o = this.objects[i];
-            this.layer.strokeStyle('white');
-            this.layer.strokeRect(o.x, o.y, o.w, o.h);
+        if(this.showCollectables){
+            for(var i = 0; i < this.actualRoom.items.length; i++){
+                var o = this.actualRoom.items[i];
+                this.layer.strokeStyle('white');
+                this.layer.strokeRect(o.x, o.y, o.w, o.h);
+                this.layer.drawImage(this.images[o.image], o.x, o.y);
+            }
         }
     },
 
@@ -410,12 +414,18 @@ var app = playground({
         }
     },
 
+    loadItems: function(room) {
+        for(var i = 0; i < room.items.length; i++){
+            this.loadImages(room.items[i].image);
+        }
+    },
+
     loadMap: function(map) {
         this.actualMap   = map;
         this.actualRoomX = map.startx;
         this.actualRoomY = map.starty;
         this.actualRoom  = map.rooms[map.starty][map.startx];
-        this.objects = this.actualRoom.items;
+        //this.objects = this.actualRoom.items;
         this.bg = this.actualRoom.image;
         //collectables
         //pnjs
@@ -424,6 +434,7 @@ var app = playground({
                 this.loadImages(map.rooms[i][b].image);
                 if(map.rooms[i][b].collectables){
                     this.loadCollectables(map.rooms[i][b]);
+                    this.loadItems(map.rooms[i][b]);
                 }
                 //console.log(map.rooms[i][b].image);
             }
@@ -630,35 +641,34 @@ var app = playground({
         }
 
         //collision with items
-        for(var i = 0; i < this.objects.length; i++){
-            if( this.fantomCollide(this.objects[i]) ){
-                var f = this.fantom;
-                var o = this.objects[i];
-                f.collideWith = o;
+        if(this.actualRoom){
+            for(var i = 0; i < this.actualRoom.items.length; i++){
+                if( this.fantomCollide(this.actualRoom.items[i]) ){
+                    var f = this.fantom;
+                    var o = this.actualRoom.items[i];
+                    f.collideWith = o;
 
-                if((f.x + f.w >= o.x && f.x + f.w <= o.x + 5)){
-                    //obj is right
-                    f.xs = 0;
-                    f.x  = o.x - f.w - 1;
-                } else if ((f.x <= o.x + o.w && f.x >= o.x + o.w - 5)){
-                    //obj is left
-                    f.xs = 0;
-                    f.x  = o.x + o.w + 1;
-                } else if((f.y + f.h >= o.y && f.y + f.h <= o.y + 5)){
-                    //obj is bot
-                    f.ys = 0;
-                    f.y  = o.y - f.h - 1;
-                } else if ((f.y <= o.y + o.h && f.y >= o.y + o.h - 5)){
-                    //obj is top
-                    f.ys = 0;
-                    f.y  = o.y + o.h + 1;
+                    if((f.x + f.w >= o.x && f.x + f.w <= o.x + 5)){
+                        //obj is right
+                        f.xs = 0;
+                        f.x  = o.x - f.w - 1;
+                    } else if ((f.x <= o.x + o.w && f.x >= o.x + o.w - 5)){
+                        //obj is left
+                        f.xs = 0;
+                        f.x  = o.x + o.w + 1;
+                    } else if((f.y + f.h >= o.y && f.y + f.h <= o.y + 5)){
+                        //obj is bot
+                        f.ys = 0;
+                        f.y  = o.y - f.h - 1;
+                    } else if ((f.y <= o.y + o.h && f.y >= o.y + o.h - 5)){
+                        //obj is top
+                        f.ys = 0;
+                        f.y  = o.y + o.h + 1;
+                    }
                 }
-            } else {
-                //this.fantom.collideWith = 'undefined';
-            }
 
-
-        }//end collision width items
+            }//end collision width items
+        }
 
         this.getCollectable();
     },
@@ -687,6 +697,7 @@ var app = playground({
         //player
         this.layer.drawImage( this.images[this.fantom.image], this.fantom.x - (100 - this.fantom.w)/2, this.fantom.y - 70);
         //this.layer.strokeRect(this.fantom.x, this.fantom.y, this.fantom.w, this.fantom.h);
+
 
         //intro
         this.layer.fillStyle('purple');

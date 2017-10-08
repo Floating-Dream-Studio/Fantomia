@@ -16,10 +16,10 @@ function dist(obj, obj2){
 
 //items (block)
 var desk =  {
-    x: 250,
+    x: 200,
     y: 300,
-    w: 50,
-    h: 50,
+    w: 64,
+    h: 64,
     image: 'table',
     action: () => {
         app.Music.volume = 0.0;
@@ -28,9 +28,9 @@ var desk =  {
 
 //collectables
 var lettre = {
-    image: 'c1',
+    image: 'lettre',
     x: 300,
     y: 300,
-    w: 50,
-    h: 50
+    w: 64,
+    h: 64
 }
