@@ -564,8 +564,16 @@ var app = playground({
             for(var b = 0; b < map[a].length; b++){
                 this.layer.fillStyle("red");
                 this.layer.fillRect(x + b*100, y + a*100, 100, 100);
+                var img = this.images[map[a][b].image];
+                this.layer.context.drawImage(img, 0, 0, 600, 600, x+b*100, y+a*100, 100, 100);
             }
         }
+        this.layer.strokeStyle('white');
+        this.layer.strokeRect(x, y, 300, 200);
+        this.layer.fillStyle('red');
+        this.layer.a(0.3);
+        this.layer.fillRect(x + this.actualRoomX*100, y + this.actualRoomY*100, 100, 100);
+        this.layer.a(1);
     },
 
     //game
