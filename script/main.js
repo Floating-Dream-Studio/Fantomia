@@ -135,8 +135,9 @@ var app = playground({
             h: 50
         }
 
-        this.collectables = [this.itemRed];
+        this.collectables = [];//[this.itemRed];
         this.toCollect = [];
+        this.showCollectables = true;
 
         this.actualCollectPannel = {
             //window for collectables items
@@ -357,7 +358,7 @@ var app = playground({
     },
 
     drawCollectables: function() {
-        if(this.actualRoom.collectables){
+        if(this.actualRoom.collectables && this.showCollectables){
             for(var i = 0; i < this.actualRoom.collectables.length; i++){
                 var c = this.actualRoom.collectables[i]
                 this.layer.drawImage(this.images[c.image], c.x, c.y);
@@ -451,10 +452,14 @@ var app = playground({
     lauchTransition: function(x, y) {
         this.transit.show = true;
         this.canMoove = false;
+        this.showCollectables = false;
         setTimeout(()=>{
             this.transit.show = false;
+            this.showCollectables = true;
             this.canMoove = true;
             this.bg = this.actualRoom.image;
+            this.objects = this.actualRoom.items;
+            //this.collectables = this.actualRoom.collectables;
             this.fantom.y = y;
             this.fantom.x = x;
         }, 1000);
@@ -464,7 +469,7 @@ var app = playground({
     },
 
     mapUp: function(x, y) {
-        this.actualRoom.collectables = this.collectables;
+        //this.actualRoom.collectables = this.collectables;
         if(this.actualRoomY >= 1){
             this.lauchTransition(x, y);
             var a = this.actualRoomY - 1;
@@ -472,14 +477,14 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            this.objects = this.actualRoom.items;
+            //this.objects = this.actualRoom.items;
 
 
         }
     },
 
     mapDown: function(x, y) {
-        this.actualRoom.collectables = this.collectables;
+        //this.actualRoom.collectables = this.collectables;
         if(this.actualRoomY < this.actualMap.rooms.length-1){
             this.lauchTransition(x, y);
             var a = this.actualRoomY + 1;
@@ -487,13 +492,13 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            this.objects = this.actualRoom.items;
+            //this.objects = this.actualRoom.items;
             //collectables
         }
     },
 
     mapRight: function(x, y) {
-        this.actualRoom.collectables = this.collectables;
+        //this.actualRoom.collectables = this.collectables;
         if(this.actualRoomX < this.actualMap.rooms[0].length-1){
             this.lauchTransition(x, y);
             var a = this.actualRoomY;
@@ -501,14 +506,14 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            this.objects = this.actualRoom.items;
+            //this.objects = this.actualRoom.items;
             //collectables
             //this.canMoove = false;
         }
     },
 
     mapLeft: function(x, y) {
-        this.actualRoom.collectables = this.collectables;
+        //this.actualRoom.collectables = this.collectables;
         if(this.actualRoomX >= 1){
             this.lauchTransition(x, y);
             var a = this.actualRoomY;
@@ -516,7 +521,7 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            this.objects = this.actualRoom.items;
+            //this.objects = this.actualRoom.items;
             //collectables
         }
     },
@@ -567,7 +572,6 @@ var app = playground({
 
         //collision width border
         if(this.fantom.x > this.width - this.fantom.w - 100){
-            //this.fantom.x  = this.width - this.fantom.w - 100;
             this.fantom.xs = 0;
             this.fantom.x = this.width - this.fantom.w - 101;
 
@@ -575,7 +579,6 @@ var app = playground({
                 let x  = 101;
                 let y  = this.fantom.y;
                 this.mapRight(x, y);
-                //this.fantom.x  = 101;
                 this.canMoove = false;
             } else {
                 this.fantom.x  = this.width - this.fantom.w - 101;
@@ -583,7 +586,6 @@ var app = playground({
             }
 
         } else if(this.fantom.x < 100){
-            //this.fantom.x  = 100;
             this.fantom.xs = 0;
             this.fantom.x  = 101;
 
@@ -591,7 +593,6 @@ var app = playground({
                 let x  = this.width - this.fantom.w - 101;
                 let y = this.fantom.y;
                 this.mapLeft(x, y);
-                //this.fantom.x  = this.width - this.fantom.w - 101;
                 this.canMoove = false;
 
             } else {
@@ -608,7 +609,6 @@ var app = playground({
                 let x = this.fantom.x;
                 let y = 210;
                 this.mapDown(x, y);
-                //this.fantom.y  = 210;
                 this.canMoove = false;
             } else {
                 this.fantom.y  = this.height - this.fantom.h - 100 - 201;
@@ -622,7 +622,6 @@ var app = playground({
                 let x = this.fantom.x;
                 let y = this.height - this.fantom.h - 100 - 200;
                 this.mapUp();
-                //this.fantom.y  = this.height - this.fantom.h - 100 - 200;
                 this.canMoove = false;
             } else {
                 this.fantom.y  = this.actualRoom.wallY;
@@ -694,10 +693,6 @@ var app = playground({
         this.layer.fillRect(this.intro.x, this.intro.y, this.intro.w, this.intro.h);
         this.layer.drawImage(this.images['play'], this.pB.x, this.pB.y);
 
-        /*if(this.transit.show){
-            this.layer.fillStyle('black');
-            this.layer.fillRect(100, 100, 600, 600);
-        }*/
         this.drawTransition();
 
         //draw items and collectables pannels
