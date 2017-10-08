@@ -25,3 +25,12 @@ var desk =  {
         app.Music.volume = 0.0;
     }
 };
+
+//collectables
+var lettre = {
+    image: 'c1',
+    x: 300,
+    y: 300,
+    w: 50,
+    h: 50
+}

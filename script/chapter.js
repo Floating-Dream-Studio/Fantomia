@@ -3,27 +3,29 @@
 //rooms Manoire
 var manoire1 = {
     name  : 'salon',
-    image : 'salon',
+    image : 'plancher',
     wallY : 210,
-    items : [desk]
+    items : [desk],
+    collectables: [lettre]
 }
 
 var manoire2 = {
     name  : 'bibliotheque',
-    image : 'biblio',
+    image : 'plancher',
     wallY : 210,
     items : []
 }
 
 var manoire3 = {
     name  : 'cave',
-    image : 'cave',
+    image : 'plancher',
     wallY : 210,
     items : []
 }
 
 var manoire4 = {
     name : 'salle du boss',
+    image: 'plancher',
     items : [],
     wallY : 180
 }
