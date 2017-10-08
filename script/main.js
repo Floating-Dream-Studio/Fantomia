@@ -32,7 +32,7 @@ var app = playground({
         }
 
         this.controls = this.French;
-
+        this.canMoove = true;
         //player
         this.fantom = {
             x: 400,
@@ -174,7 +174,7 @@ var app = playground({
     //inputs
     keydown: function (e) {
         //console.log(e.key);
-        if(this.introDone){
+        if(this.introDone && this.canMoove){
             switch (e.key) {
                 case this.controls.left:
                     this.fantom.ys = 0;
@@ -438,6 +438,13 @@ var app = playground({
             this.actualRoom = this.actualMap.rooms[a][b];
             this.transit = true;
             this.objects = this.actualRoom.items;
+
+            this.transit = true;
+            this.canMoove = false;
+            setTimeout(()=>{
+                this.transit = false;
+                this.canMoove = true;
+            }, 1000);
         }
     },
 
@@ -452,6 +459,12 @@ var app = playground({
             this.transit = true;
             this.objects = this.actualRoom.items;
             //collectables
+            this.transit = true;
+            this.canMoove = false;
+            setTimeout(()=>{
+                this.transit = false;
+                this.canMoove = true;
+            }, 1000);
         }
     },
 
@@ -466,6 +479,12 @@ var app = playground({
             this.transit = true;
             this.objects = this.actualRoom.items;
             //collectables
+            this.transit = true;
+            this.canMoove = false;
+            setTimeout(()=>{
+                this.transit = false;
+                this.canMoove = true;
+            }, 1000);
         }
     },
 
@@ -480,6 +499,12 @@ var app = playground({
             this.transit = true;
             this.objects = this.actualRoom.items;
             //collectables
+            this.transit = true;
+            this.canMoove = false;
+            setTimeout(()=>{
+                this.transit = false;
+                this.canMoove = true;
+            }, 1000);
         }
     },
 
@@ -517,8 +542,10 @@ var app = playground({
     //game
     step: function(){
 
-        this.fantom.x += this.fantom.xs;
-        this.fantom.y += this.fantom.ys;
+        if(this.canMoove){
+            this.fantom.x += this.fantom.xs;
+            this.fantom.y += this.fantom.ys;
+        }
 
         this.fantom.hitbox.x = this.fantom.x + 20;
         this.fantom.hitbox.y = this.fantom.y + 20;
@@ -529,24 +556,29 @@ var app = playground({
         if(this.fantom.x > this.width - this.fantom.w - 100){
             //this.fantom.x  = this.width - this.fantom.w - 100;
             this.fantom.xs = 0;
+            this.fantom.x = this.width - this.fantom.w - 101;
 
             if(this.actualRoomX < 2){
                 this.mapRight();
-                this.fantom.x  = 100;
+                this.fantom.x  = 101;
+                this.canMoove = false;
             } else {
-                this.fantom.x  = this.width - this.fantom.w - 100;
+                this.fantom.x  = this.width - this.fantom.w - 101;
                 this.fantom.xs = 0;
             }
 
         } else if(this.fantom.x < 100){
             //this.fantom.x  = 100;
             this.fantom.xs = 0;
+            this.fantom.x  = 101;
 
             if(this.actualRoomX > 0){
                 this.mapLeft();
-                this.fantom.x  = this.width - this.fantom.w - 100;
+                this.fantom.x  = this.width - this.fantom.w - 101;
+                this.canMoove = false;
+
             } else {
-                this.fantom.x  = 100;
+                this.fantom.x  = 101;
                 this.fantom.xs = 0;
             }
         }
@@ -558,8 +590,9 @@ var app = playground({
             if(this.actualRoomY < this.actualMap.rooms.length-1){
                 this.mapDown();
                 this.fantom.y  = 210;
+                this.canMoove = false;
             } else {
-                this.fantom.y  = this.height - this.fantom.h - 100 - 200;
+                this.fantom.y  = this.height - this.fantom.h - 100 - 201;
                 this.fantom.ys = 0;
             }
 
@@ -569,6 +602,7 @@ var app = playground({
             if(this.actualRoomY >= 1){
                 this.mapUp();
                 this.fantom.y  = this.height - this.fantom.h - 100 - 200;
+                this.canMoove = false;
             } else {
                 this.fantom.y  = this.actualRoom.wallY;
                 this.fantom.ys = 0;
@@ -605,11 +639,12 @@ var app = playground({
 
 
         }//end collision width items
-        if(this.transit){
+        /*if(this.transit){
             setTimeout(()=>{
                 this.transit = false;
-            }, 500);
-        }
+                this.canMoove = true;
+            }, 1000);
+        }*/
         this.getCollectable();
     },
 
