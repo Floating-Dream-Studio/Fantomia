@@ -640,7 +640,7 @@ var app = playground({
             if(this.actualRoomY >= 1){
                 let x = this.fantom.x;
                 let y = this.height - this.fantom.h - 100 - 200;
-                this.mapUp();
+                this.mapUp(x, y);
                 this.canMoove = false;
             } else {
                 this.fantom.y  = this.actualRoom.wallY;
