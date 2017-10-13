@@ -460,7 +460,7 @@ var app = playground({
         }
     },
 
-    lauchTransition: function(x, y) {
+    lauchTransition: function(way) {
         this.transit.show = true;
         this.canMoove = false;
         this.showCollectables = false;
@@ -471,33 +471,31 @@ var app = playground({
             this.bg = this.actualRoom.image;
             this.objects = this.actualRoom.items;
             //this.collectables = this.actualRoom.collectables;
-            this.fantom.y = y;
-            this.fantom.x = x;
+            this.fantom.y = this.actualRoom[way].y;//y;
+            this.fantom.x = this.actualRoom[way].x;//x;
         }, 1000);
         this.tween(this.transit)
             .to({alpha: 1}, 0.5).wait(0.5)
             .to({alpha: 0}, 0.8)
     },
 
-    mapUp: function(x, y) {
+    mapUp: function() {
         //this.actualRoom.collectables = this.collectables;
         if(this.actualRoomY >= 1){
-            this.lauchTransition(x, y);
+            this.lauchTransition('up');
             var a = this.actualRoomY - 1;
             var b = this.actualRoomX;
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
             //this.objects = this.actualRoom.items;
-
-
         }
     },
 
-    mapDown: function(x, y) {
+    mapDown: function() {
         //this.actualRoom.collectables = this.collectables;
         if(this.actualRoomY < this.actualMap.rooms.length-1){
-            this.lauchTransition(x, y);
+            this.lauchTransition('down');
             var a = this.actualRoomY + 1;
             var b = this.actualRoomX;
             this.actualRoomY = a;
@@ -508,10 +506,10 @@ var app = playground({
         }
     },
 
-    mapRight: function(x, y) {
+    mapRight: function() {
         //this.actualRoom.collectables = this.collectables;
         if(this.actualRoomX < this.actualMap.rooms[0].length-1){
-            this.lauchTransition(x, y);
+            this.lauchTransition('right');
             var a = this.actualRoomY;
             var b = this.actualRoomX + 1;
             this.actualRoomY = a;
@@ -523,10 +521,10 @@ var app = playground({
         }
     },
 
-    mapLeft: function(x, y) {
+    mapLeft: function() {
         //this.actualRoom.collectables = this.collectables;
         if(this.actualRoomX >= 1){
-            this.lauchTransition(x, y);
+            this.lauchTransition('left');
             var a = this.actualRoomY;
             var b = this.actualRoomX - 1;
             this.actualRoomY = a;
@@ -590,6 +588,7 @@ var app = playground({
         this.fantom.hitbox.h = 60;
 
         //collision width border
+        /*
         if(this.fantom.x > this.width - this.fantom.w - 100){
             this.fantom.xs = 0;
             this.fantom.x = this.width - this.fantom.w - 101;
@@ -611,7 +610,7 @@ var app = playground({
             if(this.actualRoomX > 0){
                 let x  = this.width - this.fantom.w - 101;
                 let y = this.fantom.y;
-                this.mapLeft(x, y);
+                this.mapLeft();
                 this.canMoove = false;
 
             } else {
@@ -627,7 +626,7 @@ var app = playground({
             if(this.actualRoomY < this.actualMap.rooms.length-1){
                 let x = this.fantom.x;
                 let y = 210;
-                this.mapDown(x, y);
+                this.mapDown();
                 this.canMoove = false;
             } else {
                 this.fantom.y  = this.height - this.fantom.h - 100 - 201;
@@ -640,12 +639,31 @@ var app = playground({
             if(this.actualRoomY >= 1){
                 let x = this.fantom.x;
                 let y = this.height - this.fantom.h - 100 - 200;
-                this.mapUp(x, y);
+                this.mapUp();
                 this.canMoove = false;
             } else {
                 this.fantom.y  = this.actualRoom.wallY;
                 this.fantom.ys = 0;
             }
+        }
+        */
+
+        if(this.fantom.x < 100){
+            this.fantom.xs = 0;
+            this.fantom.x  = 101;
+
+        } else if (this.fantom.x > this.width - 100 - this.fantom.w) {
+            this.fantom.xs = 0;
+            this.fantom.x  = this.width - 101 - this.fantom.w;
+        }
+
+        if(this.fantom.y < this.actualRoom.wallY){
+            this.fantom.ys = 0;
+            this.fantom.y  = this.actualRoom.wallY;
+
+        } else if (this.fantom.y > 700 - this.fantom.h) {
+            this.fantom.ys = 0;
+            this.fantom.y  = 700 - this.fantom.h - 1;
         }
 
         //collision with items

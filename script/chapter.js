@@ -6,28 +6,44 @@ var manoire1 = {
     image : 'plancher',
     wallY : 210,
     items : [desk],
-    collectables: [lettre]
+    collectables: [lettre],
+    up :    {x: 400, y:400 },
+    down :  {x: 400, y:400},
+    left :  {x: 400, y:400},
+    right : {x: 400, y:400}
 }
 
 var manoire2 = {
     name  : 'bibliotheque',
     image : 'plancher',
     wallY : 210,
-    items : []
+    items : [],
+    up :    {x: 400, y:400 },
+    down :  {x: 400, y:400},
+    left :  {x: 400, y:400},
+    right : {x: 400, y:400}
 }
 
 var manoire3 = {
     name  : 'cave',
     image : 'plancher',
     wallY : 210,
-    items : []
+    items : [],
+    up : {x: 400, y:400 },
+    down :  {x: 400, y:400},
+    left : {x: 400, y:400},
+    right : {x: 400, y:400}
 }
 
 var manoire4 = {
     name : 'salle du boss',
     image: 'plancher',
     items : [],
-    wallY : 180
+    wallY : 180,
+    up : {x: 400, y:400 },
+    down :  {x: 400, y:400},
+    left : {x: 400, y:400},
+    right : {x: 400, y:400}
 }
 
 var Manoire = {
