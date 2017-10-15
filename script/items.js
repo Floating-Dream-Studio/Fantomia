@@ -34,3 +34,26 @@ var lettre = {
     w: 64,
     h: 64
 }
+
+//items door
+function door(x, y, way){
+    this.x = x;
+    this.y = y;
+    this.w = 50;
+    this.h = 50;
+    this.type = 'door';
+    switch (way) {
+        case "up":
+            this.go = function(){app.mapUp(); app.canMoove = false; app.fantom.ys = 0;}
+            break;
+        case "down":
+            this.go = function(){app.mapDown(); app.canMoove = false; app.fantom.ys = 0;}
+            break;
+        case "right":
+            this.go = function(){app.mapRight(); app.canMoove = false; app.fantom.xs = 0;}
+            break;
+        case "left":
+            this.go = function(){app.mapLeft(); app.canMoove = false; app.fantom.xs = 0; console.log('left')}
+            break;
+    }
+}

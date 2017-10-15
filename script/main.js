@@ -53,7 +53,35 @@ var app = playground({
                 h: 60,
                 w: 60
             },
-            image: 'ghostieleft'
+            image: 'ghostieleft',
+
+            animations : {
+                idle : ['idle/ghostiefront', 'idle/ghostieleft'],
+                left : ['left/000', 'left/001', 'left/002', 'left/003', 'left/004', 'left/005'],
+                right: ['right/000', 'right/001', 'right/002', 'right/003', 'right/004', 'right/005'],
+                bottom:['ghostiefront'],
+                up:['ghostieback']
+            },
+
+            animations2: {
+                idle : 'idle',
+                left: 'left',
+                right:'right',
+                up:'idleq',
+                bottom:'bottom'
+            },
+
+            delay : {
+                idle: 6,
+                left: 6,
+                right: 6,
+                bottom: 6,
+                up: 6,
+            },
+            actualAnimation : 'idle',
+            index: 0,
+            indexy:0,
+            count: 0,
         }
 
         //buttons box
@@ -148,12 +176,6 @@ var app = playground({
         this.loadImages(
             'iB',
             'setings',
-            'g',
-            'g2',
-            'ghostieback',
-            'ghostieleft',
-            'ghostieright',
-            'ghostiefront',
             'pB',
             'soundOn',
             'soundOff',
@@ -163,7 +185,7 @@ var app = playground({
             'c1',
             'plancher'
         );
-
+        this.loadAnim();
         //music load
         this.Music = new Audio;
         this.Music.loop = true;
@@ -186,31 +208,36 @@ var app = playground({
                 case this.controls.left:
                     this.fantom.ys = 0;
                     this.fantom.xs = -2;
-                    this.fantom.image = 'ghostieright';
+                    this.fantom.index = 0;
+                    this.fantom.actualAnimation = 'left';
                     break;
 
                 case this.controls.right:
                     this.fantom.ys = 0;
                     this.fantom.xs = 2;
-                    this.fantom.image = 'ghostieleft';
+                    this.fantom.index = 0;
+                    this.fantom.actualAnimation = 'right';
                     break;
 
                 case this.controls.up:
                     this.fantom.xs = 0;
                     this.fantom.ys = -2;
-                    this.fantom.image = 'ghostieback';
+                    this.fantom.index = 0;
+                    this.fantom.actualAnimation = 'up';
                     break;
 
                 case this.controls.down:
                     this.fantom.xs = 0;
                     this.fantom.ys = 2;
-                    this.fantom.image = 'ghostiefront';
+                    this.fantom.index = 0;
+                    this.fantom.actualAnimation = 'bottom';
                     break;
 
                 case 'space':
                     this.fantom.xs = 0;
                     this.fantom.ys = 0;
-                    this.fantom.image = 'ghostiefront';
+                    this.fantom.index = 0;
+                    this.fantom.actualAnimation = 'idle';
                     break;
 
                 case 'e':
@@ -356,7 +383,9 @@ var app = playground({
                 var o = this.actualRoom.items[i];
                 this.layer.strokeStyle('white');
                 this.layer.strokeRect(o.x, o.y, o.w, o.h);
-                this.layer.drawImage(this.images[o.image], o.x, o.y);
+                if(o.image){
+                    this.layer.drawImage(this.images[o.image], o.x, o.y);
+                }
             }
         }
     },
@@ -420,6 +449,10 @@ var app = playground({
         }
     },
 
+    loadAnim: function() {
+        this.loadImages('left', 'right', 'up', 'bottom', 'idle');
+    },
+
     loadMap: function(map) {
         this.actualMap   = map;
         this.actualRoomX = map.startx;
@@ -469,8 +502,12 @@ var app = playground({
             this.showCollectables = true;
             this.canMoove = true;
             this.bg = this.actualRoom.image;
-            this.objects = this.actualRoom.items;
-            //this.collectables = this.actualRoom.collectables;
+            if(this.actualRoom.items){
+                this.objects = this.actualRoom.items;
+            }
+            if(this.actualRoom.collectables){
+                this.collectables = this.actualRoom.collectables;
+            }
             this.fantom.y = this.actualRoom[way].y;//y;
             this.fantom.x = this.actualRoom[way].x;//x;
         }, 1000);
@@ -501,8 +538,6 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            //this.objects = this.actualRoom.items;
-            //collectables
         }
     },
 
@@ -515,9 +550,6 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            //this.objects = this.actualRoom.items;
-            //collectables
-            //this.canMoove = false;
         }
     },
 
@@ -530,8 +562,6 @@ var app = playground({
             this.actualRoomY = a;
             this.actualRoomX = b;
             this.actualRoom = this.actualMap.rooms[a][b];
-            //this.objects = this.actualRoom.items;
-            //collectables
         }
     },
 
@@ -572,6 +602,42 @@ var app = playground({
         this.layer.a(0.3);
         this.layer.fillRect(x + this.actualRoomX*100, y + this.actualRoomY*100, 100, 100);
         this.layer.a(1);
+    },
+
+    updateFantom: function(){
+        var fantom = this.fantom;
+        var animation = fantom.animations2[fantom.actualAnimation];
+
+        var count = fantom.delay[fantom.actualAnimation];
+        var maxIndex = this.images[animation].width/100;
+
+        if(fantom.count < count ){
+            fantom.count += 1;
+        } else if (fantom.count >= count) {
+            fantom.count = 0;
+            if(fantom.index < maxIndex-1){
+                fantom.index += 1;
+                //console.log(fantom.indexy)
+            } else if(fantom.index >= maxIndex-1) {
+                fantom.index = 0;
+            }
+            //console.log(animation.length)
+        }
+
+    },
+
+    drawFantom: function(){
+        let index = this.fantom.index;
+        let actualAnimation = this.fantom.actualAnimation;
+        let imga = this.fantom.animations2[actualAnimation];
+        let img = this.images[imga];
+        //console.log(this.images.idle);
+        //this.layer.drawImage(img, this.fantom.x - (100 - this.fantom.w)/2, this.fantom.y - 70);
+        let x = index*100;
+        let xf = this.fantom.x - (100 - this.fantom.w)/2;
+        let yf = this.fantom.y - 70;
+        this.layer.context.drawImage(img, x, 0, 100, 100, xf, yf, 100, 100);
+        console.log(x)
     },
 
     //game
@@ -691,12 +757,18 @@ var app = playground({
                         f.ys = 0;
                         f.y  = o.y + o.h + 1;
                     }
+
+                    if(o.type == 'door'){
+                        o.go();
+                    }
                 }
 
             }//end collision width items
         }
 
         this.getCollectable();
+        this.updateFantom();
+
     },
 
     render: function(){
@@ -721,8 +793,9 @@ var app = playground({
         this.drawToCollect();
 
         //player
-        this.layer.drawImage( this.images[this.fantom.image], this.fantom.x - (100 - this.fantom.w)/2, this.fantom.y - 70);
-        //this.layer.strokeRect(this.fantom.x, this.fantom.y, this.fantom.w, this.fantom.h);
+        //this.layer.drawImage( this.images[this.fantom.image], this.fantom.x - (100 - this.fantom.w)/2, this.fantom.y - 70);
+        this.drawFantom();
+        this.layer.strokeRect(this.fantom.x, this.fantom.y, this.fantom.w, this.fantom.h);
 
 
         //intro
@@ -740,7 +813,6 @@ var app = playground({
 
         //this.layer.fillRect(100, 750, 30, 20)
         this.drawMiniMap(100, 750);
-
 
     }
 
