@@ -67,7 +67,7 @@ var app = playground({
                 idle : 'idle',
                 left: 'left',
                 right:'right',
-                up:'idleq',
+                up:'idle',
                 bottom:'bottom'
             },
 
@@ -469,7 +469,6 @@ var app = playground({
                     this.loadCollectables(map.rooms[i][b]);
                     this.loadItems(map.rooms[i][b]);
                 }
-                //console.log(map.rooms[i][b].image);
             }
         }
     },
@@ -610,6 +609,7 @@ var app = playground({
 
         var count = fantom.delay[fantom.actualAnimation];
         var maxIndex = this.images[animation].width/100;
+        console.log(animation)
 
         if(fantom.count < count ){
             fantom.count += 1;
@@ -631,13 +631,11 @@ var app = playground({
         let actualAnimation = this.fantom.actualAnimation;
         let imga = this.fantom.animations2[actualAnimation];
         let img = this.images[imga];
-        //console.log(this.images.idle);
-        //this.layer.drawImage(img, this.fantom.x - (100 - this.fantom.w)/2, this.fantom.y - 70);
         let x = index*100;
         let xf = this.fantom.x - (100 - this.fantom.w)/2;
         let yf = this.fantom.y - 70;
         this.layer.context.drawImage(img, x, 0, 100, 100, xf, yf, 100, 100);
-        console.log(x)
+        //console.log(x)
     },
 
     //game
