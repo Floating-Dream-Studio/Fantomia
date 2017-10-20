@@ -171,6 +171,14 @@ var app = playground({
             //window for collectables items
         };
 
+        this.popUpShow = true;
+        this.popUp = {
+            image : "test",
+            x : 200,
+            y : 1050,
+            w : 400,
+            h : 200
+        }
         //this.buildMap(this.lab);
 
         this.loadImages(
@@ -203,6 +211,7 @@ var app = playground({
     //inputs
     keydown: function (e) {
         //console.log(e.key);
+        this.popDown();
         if(this.introDone && this.canMoove){
             switch (e.key) {
                 case this.controls.left:
@@ -244,6 +253,12 @@ var app = playground({
                     if(dist(this.fantom, this.fantom.collideWith) < 60){
                         this.fantom.collideWith.action();
                     }
+                    break;
+                case 'a':
+                    this.popTop();
+                    break;
+                case 'b':
+                    this.popDown();
                     break;
             }
         }
@@ -638,6 +653,25 @@ var app = playground({
         //console.log(x)
     },
 
+    //pnj
+    drawPopUp: function(){
+        this.layer.fillRect(this.popUp.x, this.popUp.y, this.popUp.w, this.popUp.h);
+    },
+
+    popTop: function() {
+        if(this.popUpShow && this.popUp.y >= 1050){
+            this.tween(this.popUp)
+                .to({y: 300}, 0.5)
+        }
+    },
+
+    popDown: function() {
+        if(this.popUpShow && this.popUp.y < 1050){
+            this.tween(this.popUp)
+                .to({y: 1050}, 0.5)
+        }
+    },
+
     //game
     step: function(){
 
@@ -811,6 +845,8 @@ var app = playground({
 
         //this.layer.fillRect(100, 750, 30, 20)
         this.drawMiniMap(100, 750);
+
+        this.drawPopUp();
 
     }
 

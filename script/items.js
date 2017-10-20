@@ -57,3 +57,13 @@ function door(x, y, way){
             break;
     }
 }
+
+function pnj(x, y, name, image, text){
+    this.x = x;
+    this.y = y;
+    this.w = 50;
+    this.h = 50;
+    this.type = "pnj";
+    this.text = text;
+    this.image = image;
+}
