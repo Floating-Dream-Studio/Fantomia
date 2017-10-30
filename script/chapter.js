@@ -7,7 +7,7 @@ var manoire1 = {
     wallY : 210,
     items : [desk, new door(100, 500, "left"), new door(650, 500, "right")],
     collectables: [lettre],
-    up :    {x: 400, y:400 },
+    up :    {x: 400, y:400},
     down :  {x: 400, y:400},
     left :  {x: 400, y:400},
     right : {x: 400, y:400},
@@ -18,10 +18,10 @@ var manoire2 = {
     image : 'plancher',
     collectables: [],
     wallY : 210,
-    items : [],
-    up :    {x: 400, y:400 },
+    items : [new door(650, 500, "right")],
+    up :    {x: 400, y:400},
     down :  {x: 400, y:400},
-    left :  {x: 650, y:500},
+    left :  {x: 580, y:500},
     right : {x: 400, y:400}
 }
 
@@ -29,21 +29,21 @@ var manoire3 = {
     name  : 'cave',
     image : 'plancher',
     wallY : 210,
-    items : [],
-    up : {x: 400, y:400 },
+    items : [new door(100, 500, "left"), new door(400, 650, "down")],
+    up :    {x: 400, y:400},
     down :  {x: 400, y:400},
-    left : {x: 400, y:400},
+    left :  {x: 580, y:500},
     right : {x: 400, y:400}
 }
 
 var manoire4 = {
     name : 'salle du boss',
     image: 'plancher',
-    items : [],
+    items : [new door(400, 180, "up")],
     wallY : 180,
-    up : {x: 400, y:400 },
+    up :    {x: 400, y:400},
     down :  {x: 400, y:400},
-    left : {x: 400, y:400},
+    left :  {x: 400, y:400},
     right : {x: 400, y:400}
 }
 
